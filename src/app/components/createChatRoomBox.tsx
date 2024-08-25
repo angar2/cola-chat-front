@@ -3,23 +3,26 @@
 import React, { useState } from 'react';
 import { createRoom } from '@/shared/apis/chatApi';
 
+const NAMESPACE = 'anonymous';
 export default function CreateChatRoomBox() {
-  const [roomName, setRoomName] = useState<string>('');
+  const [roomTitle, setRoomTitle] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRoomName(event.target.value);
+    setRoomTitle(event.target.value);
   };
 
   const handleClick = async () => {
-    if (roomName.trim() === '') {
+    if (roomTitle.trim() === '') {
       setError('채팅방 이름을 입력해주세요.');
       return;
     }
 
-    const response = await createRoom(roomName);
-    const roomId = response.payload.id;
-    window.open(`/chat/${roomId}`, '_blank');
+    const room = await createRoom({
+      title: roomTitle,
+      namespace: NAMESPACE,
+    });
+    window.open(`/chat/${room.id}`, '_blank');
   };
 
   return (
@@ -27,7 +30,7 @@ export default function CreateChatRoomBox() {
       <div className="mb-4">
         <input
           type="text"
-          value={roomName}
+          value={roomTitle}
           onChange={handleChange}
           placeholder="채팅방 이름"
           className="px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"

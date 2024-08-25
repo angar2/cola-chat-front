@@ -1,19 +1,16 @@
 import { Metadata } from 'next';
+import ChatRoom from '@/app/components/chatRoom';
 
 export const metadata: Metadata = {
   title: 'Cola Chat',
-  description: '',
+  description: 'Cola Chat',
 };
 
-export default async function ChatPage({ params }: { params: { id: string } }) {
+export default function ChatPage({ params }: { params: { id: string } }) {
   return (
-    <div className="flex items-center w-full h-full  overflow-auto">
+    <div className="flex items-center w-full h-full overflow-auto">
       <div className="flex w-full overflow-hidden h-screen ">
-        <div className="flex flex-col w-full">
-          <div className="p-2">
-            <div className="relative mx-auto max-w-3xl">채팅방</div>
-          </div>
-        </div>
+        <ChatRoom roomId={params.id} />
       </div>
     </div>
   );
