@@ -9,7 +9,6 @@ export default function useMessageStore() {
   }, []);
 
   useEffect(() => {
-    console.log(messages);
   }, [messages]);
 
   return {

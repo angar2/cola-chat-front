@@ -6,10 +6,12 @@ export const metadata: Metadata = {
   description: 'Cola Chat',
 };
 
-export default function ChatPage({ params }: { params: { id: string } }) {
+type Params = { params: { id: string } };
+
+export default function ChatPage({ params }: Params) {
   return (
     <div className="flex items-center w-full h-full overflow-auto">
-      <div className="flex w-full overflow-hidden h-screen ">
+      <div className="flex w-full overflow-hidden h-screen">
         <ChatRoom roomId={params.id} />
       </div>
     </div>
