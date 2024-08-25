@@ -10,6 +10,14 @@ export type Room = {
   userId: string | null;
 };
 
+export type Participant = {
+  id: string;
+  nickname: string;
+  createdAt: Date;
+  deletedAt: Date | null;
+  isActive: boolean;
+};
+
 export type Message = {
   id: number;
   type: MessageType;
@@ -17,4 +25,5 @@ export type Message = {
   sentAt: Date;
   roomId: string;
   participantId: string;
+  participant: Participant;
 };

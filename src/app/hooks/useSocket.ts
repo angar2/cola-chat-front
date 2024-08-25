@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import generateNickname from '@/shared/utils/nickname';
+import { Message } from '@/shared/types/type';
 
 const SOCKET_BASE_URL = process.env.NEXT_PUBLIC_SOCKET_BASE_URL as string;
 
 export default async function useSocket(
   roomId: string,
   namespace: string,
-  onMessage: (message: string) => void
+  onMessage: (message: Message) => void
 ) {
   const [socket, setSocket] = useState<Socket | null>(null);
 

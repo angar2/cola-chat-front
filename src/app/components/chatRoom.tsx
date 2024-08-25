@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { getRoom } from '@/shared/apis/chatApi';
 import EnterConfirmModal from './enterConfirmModal';
 import EnteredChatRoom from './enteredChatRoom';
+import { Room } from '@/shared/types/type';
 
 type Props = {
   roomId: string;
@@ -15,20 +16,17 @@ export default function ChatRoom(props: Props) {
 
   const router = useRouter();
 
-  const [roomTitle, setRoomTitle] = useState<string>('');
-  const [namespace, setNamespace] = useState<string>('');
-
   const [isEntryConfirmed, setIsEntryConfirmed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [room, setRoom] = useState<Room | null>(null);
 
   useEffect(() => {
+    setIsEntryConfirmed(getLocalRoomIds().includes(roomId));
+
     (async () => {
       const room = await getRoom(roomId);
-      setRoomTitle(room.title);
-      setNamespace(room.namespace);
+      setRoom(room);
     })();
-
-    setIsEntryConfirmed(getLocalRoomIds().includes(roomId));
   }, []);
 
   useEffect(() => {
@@ -42,20 +40,14 @@ export default function ChatRoom(props: Props) {
   };
 
   return (
-    <div className="flex flex-col w-full">
-      <div className="p-2">
-        <p className="relative mx-auto max-w-3xl">{namespace}</p>
-        <p className="relative mx-auto max-w-3xl">{roomTitle}</p>
-      </div>
+    <>
       <EnterConfirmModal
         isOpen={isModalOpen}
         onClose={() => router.push('/')}
         onConfirm={handleEnterChatRoom}
       />
-      {isEntryConfirmed && (
-        <EnteredChatRoom namespace={namespace} roomId={props.roomId} />
-      )}
-    </div>
+      {isEntryConfirmed && room && <EnteredChatRoom room={room} />}
+    </>
   );
 }
 
