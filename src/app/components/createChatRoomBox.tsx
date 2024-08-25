@@ -33,7 +33,7 @@ export default function CreateChatRoomBox() {
           value={roomTitle}
           onChange={handleChange}
           placeholder="채팅방 이름"
-          className="px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+          className="px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {error && <p className="text-sm mt-2 text-red-500">{error}</p>}{' '}
       </div>
