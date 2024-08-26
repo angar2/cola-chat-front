@@ -5,7 +5,7 @@ import { Message } from '@/shared/types/type';
 
 const SOCKET_BASE_URL = process.env.NEXT_PUBLIC_SOCKET_BASE_URL as string;
 
-export default async function useSocket(
+export default function useSocket(
   roomId: string,
   namespace: string,
   onMessage: (message: Message) => void
