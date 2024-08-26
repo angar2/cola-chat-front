@@ -1,25 +1,77 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Message } from '@/shared/types/type';
+import { SCROLL_BOTTOM_LIMIT } from '@/shared/constants/config';
 
 type Props = {
-  messages: Message[];
+  messages: {
+    storageMessages: Message[];
+    newMessages: Message[];
+  };
+  nextPage: () => void;
 };
 
 export default function MessageFeed(props: Props) {
-  const { messages } = props;
+  const { messages, nextPage } = props;
   const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
+  // 스크롤 현위치
+  const handleScroll = () => {
+    const ref = scrollRef.current;
+    if (ref) {
+      // 스크롤 최상단
+      if (ref.scrollTop === 0) {
+        setScrollPosition(ref.scrollHeight - ref.scrollTop); // 현 스크롤 위치 캡쳐
+        nextPage(); // 페이지 넘기기
+      }
+    }
+  };
+
+  // 스크롤 이벤트 등록
   useEffect(() => {
-    // 스크롤 위치 조정
-    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    const ref = scrollRef.current;
+    ref?.addEventListener('scroll', handleScroll);
+
+    return () => {
+      ref?.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // 스크롤 위치 조정(저장된 메세지 로드)
+  useEffect(() => {
+    adjustScrollPosition(scrollRef, scrollPosition);
+  }, [messages.storageMessages]);
+
+  // 스크롤 위치 조정(새로운 메세지 로드)
+  useEffect(() => {
+    adjustScrollToBottom(scrollRef, endOfMessagesRef);
+  }, [messages.newMessages]);
 
   return (
-    <div className="flex flex-col space-y-2 p-4 h-[80vh] overflow-y-auto bg-white">
-      {messages.length > 0 &&
-        messages.map((message, index) => (
+    <div
+      ref={scrollRef}
+      className="flex flex-col space-y-2 p-4 h-[80vh] overflow-y-auto bg-white"
+    >
+      {/* 저장된 메세지 */}
+      {messages.storageMessages.length > 0 &&
+        messages.storageMessages.map((message, index) => (
+          <div key={index} className="border p-2 rounded bg-gray-100">
+            <p>
+              <strong>{message.participant.nickname}</strong>
+            </p>
+            <p>{message.content}</p>
+            <p className="text-xs text-gray-500">
+              {message.sentAt.toLocaleString()}
+            </p>
+          </div>
+        ))}
+
+      {/* 새로운 메세지 */}
+      {messages.newMessages.length > 0 &&
+        messages.newMessages.map((message, index) => (
           <div key={index} className="border p-2 rounded bg-gray-100">
             <p>
               <strong>{message.participant.nickname}</strong>
@@ -35,4 +87,31 @@ export default function MessageFeed(props: Props) {
       <div ref={endOfMessagesRef} />
     </div>
   );
+}
+
+function adjustScrollPosition(
+  scrollRef: React.RefObject<HTMLDivElement> | null,
+  scrollPosition: number
+) {
+  if (!scrollRef) return;
+  const ref = scrollRef.current;
+  if (ref && getVisiblePosition(ref) > SCROLL_BOTTOM_LIMIT)
+    ref.scrollTop = ref.scrollHeight - scrollPosition;
+}
+
+function adjustScrollToBottom(
+  scrollRef: React.RefObject<HTMLDivElement> | null,
+  endOfMessagesRef: React.RefObject<HTMLDivElement> | null
+) {
+  if (!scrollRef || !endOfMessagesRef) return;
+  if (
+    scrollRef.current &&
+    getVisiblePosition(scrollRef.current) < SCROLL_BOTTOM_LIMIT
+  )
+    endOfMessagesRef!.current?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function getVisiblePosition(ref: HTMLElement | null): number {
+  if (!ref) return 0;
+  else return ref.scrollHeight - ref.scrollTop - ref.clientHeight;
 }

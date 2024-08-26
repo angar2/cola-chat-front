@@ -14,7 +14,7 @@ type Props = {
 export default function EnteredChatRoom(props: Props) {
   const { id: roomId, namespace, title } = props.room;
 
-  const { messages, addMessage } = useMessageStore(roomId);
+  const { messages, addMessage, nextPage } = useMessageStore(roomId);
 
   const handleMessage = (message: Message) => {
     addMessage(message);
@@ -25,7 +25,12 @@ export default function EnteredChatRoom(props: Props) {
   return (
     <div className="flex flex-col w-full">
       <RoomHeader room={props.room} />
-      <MessageContainer roomId={roomId} messages={messages} socket={socket} />
+      <MessageContainer
+        roomId={roomId}
+        messages={messages}
+        nextPage={nextPage}
+        socket={socket}
+      />
     </div>
   );
 }
