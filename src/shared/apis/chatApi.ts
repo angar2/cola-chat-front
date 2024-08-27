@@ -14,9 +14,15 @@ export async function getRoom(param: string) {
 export async function getMessagesFromRoom(param: {
   roomId: string;
   page: number;
+  participantId: string;
 }) {
-  const { roomId, page } = param;
+  const { roomId, page, participantId } = param;
   return (
-    await fetchApi<Message[]>(`${endpoint}/messages/${roomId}/${page}`, 'GET')
+    await fetchApi<Message[]>(
+      `${endpoint}/messages/${roomId}/${page}${
+        participantId && '/' + participantId
+      }`,
+      'GET'
+    )
   ).payload;
 }

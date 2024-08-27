@@ -1,5 +1,6 @@
 import { getMessagesFromRoom } from '@/shared/apis/chatApi';
 import { Message } from '@/shared/types/type';
+import { getLocalRoomParticipants } from '@/shared/utils/storage';
 import { useState, useCallback, useEffect } from 'react';
 
 export default function useMessageStore(roomId: string) {
@@ -17,9 +18,14 @@ export default function useMessageStore(roomId: string) {
     (async () => {
       // 로딩 상태 활성화
       setLoading(true);
-
+      
       // 저장된 메세지 로드
-      const initialMessages = await getMessagesFromRoom({ roomId, page });
+      const initialMessages = await getMessagesFromRoom({
+        roomId,
+        page,
+        participantId: getLocalRoomParticipants()[roomId],
+      });
+
       setMessages((prevMessages) => ({
         ...prevMessages,
         storageMessages: [...initialMessages, ...prevMessages.storageMessages],
