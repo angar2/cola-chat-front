@@ -3,6 +3,8 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { Message } from '@/shared/types/type';
 import { SCROLL_BOTTOM_LIMIT } from '@/shared/constants/config';
+import MessagePreview from './messagePreview';
+import { getLocalRoomParticipants } from '@/shared/utils/storage';
 
 type Props = {
   messages: {
@@ -15,19 +17,29 @@ type Props = {
 
 export default function MessageFeed(props: Props) {
   const { messages, nextPage, endOfMessagesRef } = props;
+
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [showMessagePreview, setShowMessagePreview] = useState(false);
+  const [lastMessage, setLastMessage] = useState<Message>();
 
-  // 스크롤 현위치
+  // 스크롤 위치 감지
   const handleScroll = () => {
     const ref = scrollRef.current;
-    if (ref) {
-      // 스크롤 최상단
-      if (ref.scrollTop === 0) {
-        setScrollPosition(ref.scrollHeight - ref.scrollTop); // 현 스크롤 위치 캡쳐
-        nextPage(); // 페이지 넘기기
-      }
+    if (!ref) return;
+    if (ref.scrollTop === 0) {
+      setScrollPosition(ref.scrollHeight - ref.scrollTop); // 현 스크롤 위치 캡쳐
+      nextPage(); // 페이지 넘기기
     }
+    if (getVisiblePosition(ref) < SCROLL_BOTTOM_LIMIT)
+      setShowMessagePreview(false); // 메세지 미리보기 표시 해제
+  };
+
+  // 메세지 미리보기 표시
+  const handleMessagePreview = () => {
+    const ref = scrollRef.current;
+    if (ref && getVisiblePosition(ref) > SCROLL_BOTTOM_LIMIT)
+      setShowMessagePreview(true);
   };
 
   // 스크롤 이벤트 등록
@@ -42,12 +54,14 @@ export default function MessageFeed(props: Props) {
 
   // 스크롤 위치 조정(저장된 메세지 로드)
   useEffect(() => {
-    adjustScrollPosition(scrollRef, scrollPosition);
+    adjustScrollPositionByView(scrollRef, scrollPosition); // 뷰 포지션 기준 특정 메세지 위치로 스크롤 조정
   }, [messages.storageMessages]);
 
   // 스크롤 위치 조정(새로운 메세지 로드)
   useEffect(() => {
-    adjustScrollToBottom(scrollRef, endOfMessagesRef);
+    scrollToBottomByView(scrollRef, endOfMessagesRef); // 뷰 포지션 기준 최하단으로 스크롤 조정
+    handleMessagePreview(); // 메세지 미리보기 표시
+    setLastMessage(messages.newMessages[messages.newMessages.length - 1]);
   }, [messages.newMessages]);
 
   return (
@@ -86,13 +100,27 @@ export default function MessageFeed(props: Props) {
             </div>
           ))}
       </div>
+      {showMessagePreview &&
+        lastMessage &&
+        lastMessage.participantId !==
+          getLocalRoomParticipants()[lastMessage.roomId] && (
+          <MessagePreview
+            lastMessage={lastMessage}
+            onClick={() => {
+              scrollToBottom(endOfMessagesRef);
+              setShowMessagePreview(false);
+            }}
+          />
+        )}
+
       {/* 스크롤 위치 */}
       <div ref={endOfMessagesRef} className="mt-8" />
     </div>
   );
 }
 
-function adjustScrollPosition(
+// 뷰 포지션 기준 특정 메세지 위치로 스크롤 조정
+function adjustScrollPositionByView(
   scrollRef: React.RefObject<HTMLDivElement> | null,
   scrollPosition: number
 ) {
@@ -102,7 +130,8 @@ function adjustScrollPosition(
     ref.scrollTop = ref.scrollHeight - scrollPosition;
 }
 
-function adjustScrollToBottom(
+// 뷰 포지션 기준 최하단으로 스크롤 조정
+function scrollToBottomByView(
   scrollRef: React.RefObject<HTMLDivElement> | null,
   endOfMessagesRef: React.RefObject<HTMLDivElement> | null
 ) {
@@ -111,10 +140,19 @@ function adjustScrollToBottom(
     scrollRef.current &&
     getVisiblePosition(scrollRef.current) < SCROLL_BOTTOM_LIMIT
   )
-    endOfMessagesRef!.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollToBottom(endOfMessagesRef);
 }
 
+// 현재 뷰 포지션 가져오기
 function getVisiblePosition(ref: HTMLElement | null): number {
   if (!ref) return 0;
   else return ref.scrollHeight - ref.scrollTop - ref.clientHeight;
+}
+
+// 최하단으로 스크롤 조정
+function scrollToBottom(
+  endOfMessagesRef: React.RefObject<HTMLDivElement> | null
+) {
+  if (!endOfMessagesRef) return;
+  endOfMessagesRef!.current?.scrollIntoView({ behavior: 'smooth' });
 }
