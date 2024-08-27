@@ -33,8 +33,8 @@ export default function useSocket(
       socket.emit(
         'join',
         { roomId, participantId: getLocalRoomParticipants()[roomId] },
-        (data: Participant ) => {
-          saveLocalRoomParticipants(roomId, data.id);
+        (res: { data: Participant }) => {
+          saveLocalRoomParticipants(roomId, res.data.id);
         }
       );
     });
