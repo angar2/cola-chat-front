@@ -6,6 +6,10 @@ import { getRoom } from '@/shared/apis/chatApi';
 import EnterConfirmModal from './enterConfirmModal';
 import EnteredChatRoom from './enteredChatRoom';
 import { Room } from '@/shared/types/type';
+import {
+  getLocalRoomParticipants,
+  saveLocalRoomParticipants,
+} from '@/shared/utils/storage';
 
 type Props = {
   roomId: string;
@@ -21,7 +25,7 @@ export default function ChatRoom(props: Props) {
   const [room, setRoom] = useState<Room | null>(null);
 
   useEffect(() => {
-    setIsEntryConfirmed(getLocalRoomIds().includes(roomId));
+    setIsEntryConfirmed(roomId in getLocalRoomParticipants());
 
     (async () => {
       const room = await getRoom(roomId);
@@ -35,7 +39,7 @@ export default function ChatRoom(props: Props) {
   }, [isEntryConfirmed]);
 
   const handleEnterChatRoom = () => {
-    saveLocalRoomId(roomId);
+    saveLocalRoomParticipants(roomId);
     setIsEntryConfirmed(true);
   };
 
@@ -49,18 +53,4 @@ export default function ChatRoom(props: Props) {
       {isEntryConfirmed && room && <EnteredChatRoom room={room} />}
     </>
   );
-}
-
-// 로컬스토리지에 입장한 roomId 저장
-function saveLocalRoomId(roomId: string) {
-  const existingRoomIds = getLocalRoomIds();
-  if (!existingRoomIds.includes(roomId)) {
-    existingRoomIds.push(roomId);
-    localStorage.setItem('entryRoomIds', JSON.stringify(existingRoomIds));
-  }
-}
-
-// 로컬스토리지에서 입장한 roomId 가져오기
-function getLocalRoomIds(): string[] {
-  return JSON.parse(localStorage.getItem('entryRoomIds') || '[]');
 }

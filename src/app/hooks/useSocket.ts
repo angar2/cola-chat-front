@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { Message, Participant } from '@/shared/types/type';
+import {
+  getLocalRoomParticipants,
+  saveLocalRoomParticipants,
+} from '@/shared/utils/storage';
 
 const SOCKET_BASE_URL = process.env.NEXT_PUBLIC_SOCKET_BASE_URL as string;
 
@@ -26,28 +30,13 @@ export default function useSocket(
       console.log('Connected to WebSocket server');
 
       // 방 입장
-      const participantIds = JSON.parse(
-        localStorage.getItem('participantIds') || '{}'
-      );
-
       socket.emit(
         'join',
-        { roomId, participantId: participantIds[roomId] },
-        (data: Participant) => {
-          console.log(data);
-
-          const participantIds = JSON.parse(
-            localStorage.getItem('participantIds') || '{}'
-          );
-          participantIds[roomId] = data.id;
-          localStorage.setItem(
-            'participantIds',
-            JSON.stringify(participantIds)
-          );
+        { roomId, participantId: getLocalRoomParticipants()[roomId] },
+        (data: Participant ) => {
+          saveLocalRoomParticipants(roomId, data.id);
         }
       );
-
-      
     });
 
     socket.on('disconnect', () => {
