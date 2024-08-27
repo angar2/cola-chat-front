@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import generateNickname from '@/shared/utils/nickname';
-import { Message } from '@/shared/types/type';
+import { Message, Participant } from '@/shared/types/type';
 
 const SOCKET_BASE_URL = process.env.NEXT_PUBLIC_SOCKET_BASE_URL as string;
 
@@ -25,10 +24,30 @@ export default function useSocket(
 
     socket.on('connect', () => {
       console.log('Connected to WebSocket server');
-      const nickname = generateNickname();
 
       // 방 입장
-      socket.emit('join', { roomId, nickname });
+      const participantIds = JSON.parse(
+        localStorage.getItem('participantIds') || '{}'
+      );
+
+      socket.emit(
+        'join',
+        { roomId, participantId: participantIds[roomId] },
+        (data: Participant) => {
+          console.log(data);
+
+          const participantIds = JSON.parse(
+            localStorage.getItem('participantIds') || '{}'
+          );
+          participantIds[roomId] = data.id;
+          localStorage.setItem(
+            'participantIds',
+            JSON.stringify(participantIds)
+          );
+        }
+      );
+
+      
     });
 
     socket.on('disconnect', () => {
@@ -47,17 +66,17 @@ export default function useSocket(
 
     setSocket(socket);
 
-    const handleBeforeUnload = () => {
-      // 방 퇴장
-      socket.emit('leave', { roomId });
-    };
+    // const handleBeforeUnload = () => {
+    //   // 방 퇴장
+    //   socket.emit('leave', { roomId });
+    // };
 
-    // 페이지 이벤트 설정(방 퇴장)
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    // // 페이지 이벤트 설정(방 퇴장)
+    // window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      // 페이지 이벤트 제거
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      // // 페이지 이벤트 제거
+      // window.removeEventListener('beforeunload', handleBeforeUnload);
 
       // 소켓 연결 해제
       socket.disconnect();
