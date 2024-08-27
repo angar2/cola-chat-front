@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { SCROLL_DELAY_TIME } from '@/shared/constants/config';
+import { RefObject, useState } from 'react';
 import { Socket } from 'socket.io-client';
 
 type Props = {
   roomId: string;
   socket: Socket | null;
+  endOfMessagesRef: RefObject<HTMLDivElement>;
 };
 
 export default function MessageSender(props: Props) {
-  const { roomId, socket } = props;
+  const { roomId, socket, endOfMessagesRef } = props;
 
   const [content, setContent] = useState('');
 
@@ -18,6 +20,10 @@ export default function MessageSender(props: Props) {
     if (socket && content.trim() !== '') {
       socket.emit('message', { roomId, content });
       setContent('');
+
+      setTimeout(() => {
+        endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, SCROLL_DELAY_TIME);
     }
   };
   return (

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import MessageFeed from './messageFeed';
 import MessageSender from './messageSender';
 import { Message } from '@/shared/types/type';
@@ -18,10 +19,21 @@ type Props = {
 export default function MessageContainer(props: Props) {
   const { roomId, messages, nextPage, socket } = props;
 
+  const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
+
   return (
     <div className="">
-      <MessageFeed messages={messages} nextPage={nextPage} />
-      <MessageSender roomId={roomId} socket={socket} />
+      <MessageFeed
+        messages={messages}
+        nextPage={nextPage}
+        endOfMessagesRef={endOfMessagesRef}
+      />
+
+      <MessageSender
+        roomId={roomId}
+        socket={socket}
+        endOfMessagesRef={endOfMessagesRef}
+      />
     </div>
   );
 }
