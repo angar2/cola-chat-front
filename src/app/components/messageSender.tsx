@@ -1,6 +1,6 @@
 'use client';
 
-import { SCROLL_DELAY_TIME } from '@/shared/constants/config';
+import { emitMessage } from '@/shared/webSockets/emit';
 import { RefObject, useState } from 'react';
 import { Socket } from 'socket.io-client';
 
@@ -18,12 +18,11 @@ export default function MessageSender(props: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (socket && content.trim() !== '') {
-      socket.emit('message', { roomId, content });
-      setContent('');
-
-      setTimeout(() => {
+      // 메세지 전송
+      emitMessage(socket, { roomId, content }, () => {
+        setContent('');
         endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, SCROLL_DELAY_TIME);
+      });
     }
   };
   return (

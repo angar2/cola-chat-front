@@ -1,14 +1,18 @@
 import fetchApi from './api';
 import { Message, Room } from '../types/type';
+import { notFound } from 'next/navigation';
 
 const endpoint = '/chat';
 
 export async function createRoom(body: { title: string; namespace: string }) {
-  return (await fetchApi<Room>(`${endpoint}/rooms`, 'POST', body)).payload;
+  const response = await fetchApi<Room>(`${endpoint}/rooms`, 'POST', body);
+  return response.data;
 }
 
 export async function getRoom(param: string) {
-  return (await fetchApi<Room>(`${endpoint}/rooms/${param}`, 'GET')).payload;
+  const response = await fetchApi<Room>(`${endpoint}/rooms/${param}`, 'GET');
+  if (!response.success) return notFound();
+  return response.data;
 }
 
 export async function getMessagesFromRoom(param: {
@@ -17,12 +21,11 @@ export async function getMessagesFromRoom(param: {
   participantId: string;
 }) {
   const { roomId, page, participantId } = param;
-  return (
-    await fetchApi<Message[]>(
-      `${endpoint}/messages/${roomId}/${page}${
-        participantId && '/' + participantId
-      }`,
-      'GET'
-    )
-  ).payload;
+  const response = await fetchApi<Message[]>(
+    `${endpoint}/messages/${roomId}/${page}${
+      participantId && '/' + participantId
+    }`,
+    'GET'
+  );
+  return response.data;
 }

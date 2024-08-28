@@ -18,18 +18,21 @@ export default function useMessageStore(roomId: string) {
     (async () => {
       // 로딩 상태 활성화
       setLoading(true);
-      
+
       // 저장된 메세지 로드
       const initialMessages = await getMessagesFromRoom({
         roomId,
         page,
         participantId: getLocalRoomParticipants()[roomId],
       });
-
-      setMessages((prevMessages) => ({
-        ...prevMessages,
-        storageMessages: [...initialMessages, ...prevMessages.storageMessages],
-      }));
+      initialMessages &&
+        setMessages((prevMessages) => ({
+          ...prevMessages,
+          storageMessages: [
+            ...initialMessages,
+            ...prevMessages.storageMessages,
+          ],
+        }));
 
       // 로딩 상태 비활성화
       setLoading(false);

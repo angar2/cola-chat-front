@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import { getRoom } from '@/shared/apis/chatApi';
 import EnterConfirmModal from './enterConfirmModal';
 import EnteredChatRoom from './enteredChatRoom';
@@ -12,25 +12,19 @@ import {
 } from '@/shared/utils/storage';
 
 type Props = {
-  roomId: string;
+  room: Room;
 };
 
-export default function ChatRoom(props: Props) {
-  const roomId = props.roomId;
+export default function PreChatRoom(props: Props) {
+  const { room } = props;
 
   const router = useRouter();
 
   const [isEntryConfirmed, setIsEntryConfirmed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [room, setRoom] = useState<Room | null>(null);
 
   useEffect(() => {
-    setIsEntryConfirmed(roomId in getLocalRoomParticipants());
-
-    (async () => {
-      const room = await getRoom(roomId);
-      setRoom(room);
-    })();
+    setIsEntryConfirmed(room.id in getLocalRoomParticipants());
   }, []);
 
   useEffect(() => {
@@ -39,18 +33,21 @@ export default function ChatRoom(props: Props) {
   }, [isEntryConfirmed]);
 
   const handleEnterChatRoom = () => {
-    saveLocalRoomParticipants(roomId);
+    saveLocalRoomParticipants(room.id);
     setIsEntryConfirmed(true);
   };
 
   return (
-    <>
-      <EnterConfirmModal
-        isOpen={isModalOpen}
-        onClose={() => router.push('/')}
-        onConfirm={handleEnterChatRoom}
-      />
-      {isEntryConfirmed && room && <EnteredChatRoom room={room} />}
-    </>
+    room && (
+      <>
+        <EnterConfirmModal
+          isOpen={isModalOpen}
+          onClose={() => router.push('/')}
+          onConfirm={handleEnterChatRoom}
+        />
+
+        {isEntryConfirmed && <EnteredChatRoom room={room} />}
+      </>
+    )
   );
 }

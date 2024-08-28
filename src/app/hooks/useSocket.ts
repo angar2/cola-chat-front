@@ -5,6 +5,7 @@ import {
   getLocalRoomParticipants,
   saveLocalRoomParticipants,
 } from '@/shared/utils/storage';
+import { emitJoin, emitLeave } from '@/shared/webSockets/emit';
 
 const SOCKET_BASE_URL = process.env.NEXT_PUBLIC_SOCKET_BASE_URL as string;
 
@@ -29,13 +30,11 @@ export default function useSocket(
     socket.on('connect', () => {
       console.log('Connected to WebSocket server');
 
-      // 방 입장
-      socket.emit(
-        'join',
+      // 채팅방 입장
+      emitJoin(
+        socket,
         { roomId, participantId: getLocalRoomParticipants()[roomId] },
-        (res: { data: Participant }) => {
-          saveLocalRoomParticipants(roomId, res.data.id);
-        }
+        (param1, param2) => saveLocalRoomParticipants(param1, param2)
       );
     });
 
@@ -56,8 +55,8 @@ export default function useSocket(
     setSocket(socket);
 
     const handleBeforeUnload = () => {
-      // 방 퇴장
-      socket.emit('leave', { roomId });
+      // 채팅방 퇴장
+      emitLeave(socket, { roomId }, () => setSocket(null));
     };
 
     // 페이지 이벤트 설정(방 퇴장)

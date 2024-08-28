@@ -22,7 +22,7 @@ export default function CreateChatRoomBox() {
       title: roomTitle,
       namespace: NAMESPACE,
     });
-    window.open(`/chat/${room.id}`, '_blank');
+    room && window.open(`/chat/${room.id}`, '_blank');
   };
 
   return (
