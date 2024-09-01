@@ -18,6 +18,15 @@ export type Chatter = {
   isActive: boolean;
 };
 
+export type RoomChatter = {
+  id: number;
+  joinedAt: Date;
+  leftAt: Date;
+  isActive: boolean;
+  roomId: string;
+  chatterId: string;
+};
+
 export type Message = {
   id: number;
   type: MessageType;

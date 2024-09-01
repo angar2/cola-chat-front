@@ -1,14 +1,21 @@
+import Image from 'next/image';
 import CreateChatRoomBox from './components/createChatRoomBox';
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center min-h-screen md:max-w-3xl mx-auto p-4 md:p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Cola chat
-        </p>
+    <main className="flex max-w-xl justify-center items-center mx-auto pt-20">
+      <div className="flex flex-col justify-center items-center gap-12">
+        <div className="w-full px-6 overflow-auto">
+          <Image
+            src="/assets/images/main/banner.png"
+            alt="Cola Chat"
+            className="w-full"
+            width={224}
+            height={224}
+          />
+        </div>
+        <CreateChatRoomBox />
       </div>
-      <CreateChatRoomBox />
     </main>
   );
 }
