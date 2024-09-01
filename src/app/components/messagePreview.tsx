@@ -18,7 +18,7 @@ export default function MessagePreview(props: Props) {
       >
         <p>
           <strong className="text-blue-500">
-            {lastMessage.participant.nickname}
+            {lastMessage.chatter.nickname}
           </strong>
         </p>
         <p>{lastMessage.content}</p>

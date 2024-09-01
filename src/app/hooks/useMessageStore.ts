@@ -1,6 +1,6 @@
 import { getMessagesFromRoom } from '@/shared/apis/chatApi';
 import { Message } from '@/shared/types/type';
-import { getLocalRoomParticipants } from '@/shared/utils/storage';
+import { getLocalRoomChatters } from '@/shared/utils/storage';
 import { useState, useCallback, useEffect } from 'react';
 
 export default function useMessageStore(roomId: string) {
@@ -23,7 +23,7 @@ export default function useMessageStore(roomId: string) {
       const initialMessages = await getMessagesFromRoom({
         roomId,
         page,
-        participantId: getLocalRoomParticipants()[roomId],
+        chatterId: getLocalRoomChatters()[roomId],
       });
       initialMessages &&
         setMessages((prevMessages) => ({

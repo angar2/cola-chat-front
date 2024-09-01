@@ -7,8 +7,8 @@ import EnterConfirmModal from './enterConfirmModal';
 import EnteredChatRoom from './enteredChatRoom';
 import { Room } from '@/shared/types/type';
 import {
-  getLocalRoomParticipants,
-  saveLocalRoomParticipants,
+  getLocalRoomChatters,
+  saveLocalRoomChatters,
 } from '@/shared/utils/storage';
 
 type Props = {
@@ -24,7 +24,7 @@ export default function PreChatRoom(props: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    setIsEntryConfirmed(room.id in getLocalRoomParticipants());
+    setIsEntryConfirmed(room.id in getLocalRoomChatters());
   }, []);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function PreChatRoom(props: Props) {
   }, [isEntryConfirmed]);
 
   const handleEnterChatRoom = () => {
-    saveLocalRoomParticipants(room.id);
+    saveLocalRoomChatters(room.id);
     setIsEntryConfirmed(true);
   };
 

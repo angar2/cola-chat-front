@@ -10,7 +10,7 @@ export type Room = {
   userId: string | null;
 };
 
-export type Participant = {
+export type Chatter = {
   id: string;
   nickname: string;
   createdAt: Date;
@@ -24,6 +24,6 @@ export type Message = {
   content: string;
   sentAt: Date;
   roomId: string;
-  participantId: string;
-  participant: Participant;
+  chatterId: string;
+  chatter: Chatter;
 };

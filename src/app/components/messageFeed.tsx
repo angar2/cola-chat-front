@@ -4,7 +4,7 @@ import { RefObject, useEffect, useRef, useState } from 'react';
 import { Message } from '@/shared/types/type';
 import { SCROLL_BOTTOM_LIMIT } from '@/shared/constants/config';
 import MessagePreview from './messagePreview';
-import { getLocalRoomParticipants } from '@/shared/utils/storage';
+import { getLocalRoomChatters } from '@/shared/utils/storage';
 
 type Props = {
   messages: {
@@ -75,7 +75,7 @@ export default function MessageFeed(props: Props) {
           messages.storageMessages.map((message, index) => (
             <div key={index} className="border p-2 rounded bg-gray-100">
               <p>
-                <strong>{message.participant.nickname}</strong>
+                <strong>{message.chatter.nickname}</strong>
               </p>
               <p>{message.content}</p>
               <p className="text-xs text-gray-500">
@@ -90,7 +90,7 @@ export default function MessageFeed(props: Props) {
             <div key={index} className="border p-2 rounded bg-gray-100">
               <p>
                 <strong className="text-blue-500">
-                  {message.participant.nickname}
+                  {message.chatter.nickname}
                 </strong>
               </p>
               <p>{message.content}</p>
@@ -102,8 +102,8 @@ export default function MessageFeed(props: Props) {
       </div>
       {showMessagePreview &&
         lastMessage &&
-        lastMessage.participantId !==
-          getLocalRoomParticipants()[lastMessage.roomId] && (
+        lastMessage.chatterId !==
+          getLocalRoomChatters()[lastMessage.roomId] && (
           <MessagePreview
             lastMessage={lastMessage}
             onClick={() => {

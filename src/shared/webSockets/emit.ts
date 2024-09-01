@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client';
-import { Participant } from '../types/type';
+import { Chatter } from '../types/type';
 import { notFound } from 'next/navigation';
 
 interface WSResponse<T> {
@@ -11,10 +11,10 @@ interface WSResponse<T> {
 // 채팅방 입장
 export function emitJoin(
   socket: Socket,
-  data: { roomId: string; participantId: string },
+  data: { roomId: string; chatterId: string },
   callback: (param1: string, param2: string) => void
 ) {
-  socket.emit('join', data, (response: WSResponse<Participant>) => {
+  socket.emit('join', data, (response: WSResponse<Chatter>) => {
     if (response.success) callback(data.roomId, response.data.id);
     else return notFound();
   });

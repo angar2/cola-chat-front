@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { Message, Participant } from '@/shared/types/type';
+import { Message, Chatter } from '@/shared/types/type';
 import {
-  getLocalRoomParticipants,
-  saveLocalRoomParticipants,
+  getLocalRoomChatters,
+  saveLocalRoomChatters,
 } from '@/shared/utils/storage';
 import { emitJoin, emitLeave } from '@/shared/webSockets/emit';
 
@@ -33,8 +33,8 @@ export default function useSocket(
       // 채팅방 입장
       emitJoin(
         socket,
-        { roomId, participantId: getLocalRoomParticipants()[roomId] },
-        (param1, param2) => saveLocalRoomParticipants(param1, param2)
+        { roomId, chatterId: getLocalRoomChatters()[roomId] },
+        (param1, param2) => saveLocalRoomChatters(param1, param2)
       );
     });
 
