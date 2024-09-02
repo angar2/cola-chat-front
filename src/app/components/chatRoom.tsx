@@ -4,18 +4,18 @@ import { useEffect, useState } from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import { getRoom } from '@/shared/apis/chatApi';
 import EnterConfirmModal from './enterConfirmModal';
-import EnteredChatRoom from './enteredChatRoom';
 import { Room } from '@/shared/types/type';
 import {
   getLocalRoomChatters,
   saveLocalRoomChatters,
 } from '@/shared/utils/storage';
+import MessageContainer from './messageContainer';
 
 type Props = {
   room: Room;
 };
 
-export default function PreChatRoom(props: Props) {
+export default function ChatRoom(props: Props) {
   const { room } = props;
 
   const router = useRouter();
@@ -46,7 +46,7 @@ export default function PreChatRoom(props: Props) {
           onConfirm={handleEnterChatRoom}
         />
 
-        {isEntryConfirmed && <EnteredChatRoom room={room} />}
+        {isEntryConfirmed && <MessageContainer room={room} />}
       </>
     )
   );

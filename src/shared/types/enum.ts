@@ -4,6 +4,6 @@ export enum SocketEvent {
 }
 
 export enum MessageType {
-  MESSAGE,
-  PING,
+  MESSAGE = 'MESSAGE',
+  PING = 'PING',
 }

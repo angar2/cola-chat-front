@@ -3,8 +3,12 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { Message } from '@/shared/types/type';
 import { SCROLL_BOTTOM_LIMIT } from '@/shared/constants/config';
-import MessagePreview from './messagePreview';
-import { getLocalRoomChatters } from '@/shared/utils/storage';
+import MessageBox from './messageBox';
+import {
+  adjustScrollPositionByView,
+  getVisiblePosition,
+  scrollToBottomByView,
+} from '@/shared/utils/scroll';
 
 type Props = {
   messages: {
@@ -12,16 +16,22 @@ type Props = {
     newMessages: Message[];
   };
   nextPage: () => void;
+  setShowMessagePreview: (value: boolean) => void;
+  setLastMessage: (value: Message) => void;
   endOfMessagesRef: RefObject<HTMLDivElement>;
 };
 
 export default function MessageFeed(props: Props) {
-  const { messages, nextPage, endOfMessagesRef } = props;
+  const {
+    messages,
+    nextPage,
+    setShowMessagePreview,
+    setLastMessage,
+    endOfMessagesRef,
+  } = props;
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [showMessagePreview, setShowMessagePreview] = useState(false);
-  const [lastMessage, setLastMessage] = useState<Message>();
 
   // 스크롤 위치 감지
   const handleScroll = () => {
@@ -65,94 +75,27 @@ export default function MessageFeed(props: Props) {
   }, [messages.newMessages]);
 
   return (
-    <div
-      ref={scrollRef}
-      className="flex flex-col space-y-2 p-4 h-[80vh] overflow-y-auto bg-white"
-    >
-      <div className="">
+    <div ref={scrollRef} className="flex-grow p-4 overflow-y-auto">
+      <div className="flex flex-col">
         {/* 저장된 메세지 */}
         {messages.storageMessages.length > 0 &&
           messages.storageMessages.map((message, index) => (
-            <div key={index} className="border p-2 rounded bg-gray-100">
-              <p>
-                <strong>{message.chatter.nickname}</strong>
-              </p>
-              <p>{message.content}</p>
-              <p className="text-xs text-gray-500">
-                {message.sentAt.toLocaleString()}
-              </p>
+            <div key={index}>
+              <MessageBox message={message} />
             </div>
           ))}
 
         {/* 새로운 메세지 */}
         {messages.newMessages.length > 0 &&
           messages.newMessages.map((message, index) => (
-            <div key={index} className="border p-2 rounded bg-gray-100">
-              <p>
-                <strong className="text-blue-500">
-                  {message.chatter.nickname}
-                </strong>
-              </p>
-              <p>{message.content}</p>
-              <p className="text-xs text-gray-500">
-                {message.sentAt.toLocaleString()}
-              </p>
+            <div key={index}>
+              <MessageBox message={message} />
             </div>
           ))}
       </div>
-      {showMessagePreview &&
-        lastMessage &&
-        lastMessage.chatterId !==
-          getLocalRoomChatters()[lastMessage.roomId] && (
-          <MessagePreview
-            lastMessage={lastMessage}
-            onClick={() => {
-              scrollToBottom(endOfMessagesRef);
-              setShowMessagePreview(false);
-            }}
-          />
-        )}
 
       {/* 스크롤 위치 */}
-      <div ref={endOfMessagesRef} className="mt-8" />
+      <div ref={endOfMessagesRef} />
     </div>
   );
-}
-
-// 뷰 포지션 기준 특정 메세지 위치로 스크롤 조정
-function adjustScrollPositionByView(
-  scrollRef: React.RefObject<HTMLDivElement> | null,
-  scrollPosition: number
-) {
-  if (!scrollRef) return;
-  const ref = scrollRef.current;
-  if (ref && getVisiblePosition(ref) > SCROLL_BOTTOM_LIMIT)
-    ref.scrollTop = ref.scrollHeight - scrollPosition;
-}
-
-// 뷰 포지션 기준 최하단으로 스크롤 조정
-function scrollToBottomByView(
-  scrollRef: React.RefObject<HTMLDivElement> | null,
-  endOfMessagesRef: React.RefObject<HTMLDivElement> | null
-) {
-  if (!scrollRef || !endOfMessagesRef) return;
-  if (
-    scrollRef.current &&
-    getVisiblePosition(scrollRef.current) < SCROLL_BOTTOM_LIMIT
-  )
-    scrollToBottom(endOfMessagesRef);
-}
-
-// 현재 뷰 포지션 가져오기
-function getVisiblePosition(ref: HTMLElement | null): number {
-  if (!ref) return 0;
-  else return ref.scrollHeight - ref.scrollTop - ref.clientHeight;
-}
-
-// 최하단으로 스크롤 조정
-function scrollToBottom(
-  endOfMessagesRef: React.RefObject<HTMLDivElement> | null
-) {
-  if (!endOfMessagesRef) return;
-  endOfMessagesRef!.current?.scrollIntoView({ behavior: 'smooth' });
 }

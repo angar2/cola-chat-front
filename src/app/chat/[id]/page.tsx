@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
-import PreChatRoom from '@/app/components/preChatRoom';
+import ChatRoom from '@/app/components/chatRoom';
 import { getRoom } from '@/shared/apis/chatApi';
-import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Cola Chat',
@@ -14,10 +13,10 @@ export default async function ChatPage({ params }: Params) {
   const room = await getRoom(params.id);
 
   return (
-    <div className="flex items-center w-full h-full overflow-auto">
-      <div className="flex w-full overflow-hidden h-screen">
-        {room && <PreChatRoom room={room} />}
-      </div>
-    </div>
+    room && (
+      <main className="flex justify-center w-full sm:max-w-2xl 2xl:max-w-3xl items-center mx-auto py-2">
+        {<ChatRoom room={room} />}
+      </main>
+    )
   );
 }

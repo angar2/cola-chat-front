@@ -4,15 +4,15 @@ import Link from 'next/link';
 
 export default function Header() {
   return (
-    <header className="flex justify-between items-center mx-auto px-8 py-4">
+    <header className="flex justify-between items-center mx-auto px-8 pt-4 pb-2">
       <div>
         <Link href="/">
           <Image
             src={LOGO_IMAGE_URL}
             alt="Cola Chat"
-            className="w-full"
-            width={192}
-            height={56.5}
+            width={160}
+            height={50}
+            className="w-40"
           />
         </Link>
       </div>

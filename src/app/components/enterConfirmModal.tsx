@@ -12,22 +12,22 @@ export default function EnterConfirmModal(props: Props) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
-        <h2 className="text-lg font-semibold mb-4">
+      <div className="p-6 rounded bg-a shadow-lg 2xl:w-80 text-center">
+        <h2 className="text-base 2xl:text-lg font-medium mb-4">
           채팅방에 입장하시겠습니까?
         </h2>
         <div className="flex justify-center gap-4">
           <button
             onClick={onConfirm}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="w-16 py-2 bg-f text-a text-sm 2xl:text-base rounded"
           >
-            Yes
+            네
           </button>
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+            className="w-16 py-2 bg-c text-a text-sm 2xl:text-base rounded"
           >
-            No
+            아니오
           </button>
         </div>
       </div>

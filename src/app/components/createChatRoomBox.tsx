@@ -52,7 +52,7 @@ export default function CreateChatRoomBox() {
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
-      <div className="flex flex-col justify items-start w-full p-4 bg-a text-g">
+      <div className="flex flex-col justify items-start w-full p-4 bg-a text-g rounded-sm">
         {/* 채팅방 제목 입력 */}
         <div className="flex items-center gap-4">
           <div className="p-2">
@@ -77,6 +77,7 @@ export default function CreateChatRoomBox() {
             />
           </div>
         </div>
+
         {/* 인원수 선택 */}
         <div className="flex items-center gap-4">
           <div className="p-2">
@@ -109,6 +110,7 @@ export default function CreateChatRoomBox() {
             ))}
           </div>
         </div>
+
         {/* 비밀번호 입력 */}
         <div className="flex items-center gap-4 w-full">
           <div className="p-2">
@@ -144,10 +146,12 @@ export default function CreateChatRoomBox() {
           </div>
         </div>
       </div>
+
+      {/* 생성 버튼 */}
       <div className="w-full">
         <button
           onClick={handleClick}
-          className="w-full px-12 py-4 bg-d text-f text-xl font-extrabold rounded"
+          className="w-full px-12 py-4 bg-d text-f text-2xl font-extrabold rounded"
         >
           Open Cola Chat
         </button>

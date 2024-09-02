@@ -1,27 +1,25 @@
 import { Message } from '@/shared/types/type';
 
 type Props = {
-  // messages: {
-  //   storageMessages: Message[];
   lastMessage: Message | undefined;
-  // };
   onClick: () => void;
 };
+
 export default function MessagePreview(props: Props) {
   const { lastMessage, onClick } = props;
 
   return (
     lastMessage && (
       <div
-        className="fixed bottom-36 left-4 flex gap-2 bg-gray-200 p-2 rounded cursor-pointer"
+        className="absolute z-10 w-[98%] bottom-[88px] left-1/2 transform -translate-x-1/2 cursor-pointer"
         onClick={onClick}
       >
-        <p>
-          <strong className="text-blue-500">
+        <div className="flex gap-2 px-4 py-2 bg-a bg-opacity-80 text-g rounded">
+          <p className="font-semibold whitespace-nowrap">
             {lastMessage.chatter.nickname}
-          </strong>
-        </p>
-        <p>{lastMessage.content}</p>
+          </p>
+          <p className="truncate">{lastMessage.content}</p>
+        </div>
       </div>
     )
   );
