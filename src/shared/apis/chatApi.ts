@@ -4,7 +4,12 @@ import { notFound } from 'next/navigation';
 
 const endpoint = '/chat';
 
-export async function createRoom(body: { title: string; namespace: string }) {
+export async function createRoom(body: {
+  title: string;
+  namespace: string;
+  isPassword: boolean;
+  password: string;
+}) {
   const response = await fetchApi<Room>(`${endpoint}/rooms`, 'POST', body);
   return response.data;
 }
@@ -12,6 +17,14 @@ export async function createRoom(body: { title: string; namespace: string }) {
 export async function getRoom(param: string) {
   const response = await fetchApi<Room>(`${endpoint}/rooms/${param}`, 'GET');
   if (!response.success) return notFound();
+  return response.data;
+}
+
+export async function verifyRoomPassword(
+  param: string,
+  body: { password: string }
+) {
+  const response = await fetchApi<Room>(`${endpoint}/rooms/${param}`, 'POST', body);
   return response.data;
 }
 

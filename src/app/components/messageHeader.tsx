@@ -7,13 +7,34 @@ type Props = {
 };
 
 export default function MessageHeader(props: Props) {
-  const { title } = props.room;
+  const { title, isPassword } = props.room;
 
   return (
-    <div className="flex-none flex flex-col h-fit px-5 2xl:px-6 py-2 2xl:py-4 gap-2 border-b-[0.4px] border-c border-opacity-50">
-      {/* 채팅방 제목 */}
-      <div>
-        <p className="text-lg 2xl:text-xl font-semibold">{title}</p>
+    <div className="flex-none flex flex-col w-full h-fit px-5 2xl:px-6 py-2 2xl:py-4 gap-2 border-b-[0.4px] border-c border-opacity-50">
+      <div className="flex items-center gap-1">
+        {/* 채팅방 잠금 */}
+        {isPassword && (
+          <div className="flex">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-5 h-5 2xl:w-6 2xl:h-6 text-c"
+            >
+              <path
+                d="M12 16.1905C12.4641 16.1905 12.9092 16.0299 13.2374 15.7442C13.5656 15.4584 13.75 15.0708 13.75 14.6667C13.75 13.821 12.9625 13.1429 12 13.1429C11.5359 13.1429 11.0908 13.3034 10.7626 13.5892C10.4344 13.8749 10.25 14.2625 10.25 14.6667C10.25 15.0708 10.4344 15.4584 10.7626 15.7442C11.0908 16.0299 11.5359 16.1905 12 16.1905ZM17.25 9.33333C17.7141 9.33333 18.1592 9.49388 18.4874 9.77965C18.8156 10.0654 19 10.453 19 10.8571V18.4762C19 18.8803 18.8156 19.2679 18.4874 19.5537C18.1592 19.8395 17.7141 20 17.25 20H6.75C6.28587 20 5.84075 19.8395 5.51256 19.5537C5.18437 19.2679 5 18.8803 5 18.4762V10.8571C5 10.0114 5.7875 9.33333 6.75 9.33333H7.625V7.80952C7.625 6.79918 8.08594 5.83021 8.90641 5.11578C9.72688 4.40136 10.8397 4 12 4C12.5745 4 13.1434 4.09854 13.6742 4.28998C14.205 4.48143 14.6873 4.76204 15.0936 5.11578C15.4998 5.46953 15.8221 5.88949 16.042 6.35168C16.2618 6.81387 16.375 7.30925 16.375 7.80952V9.33333H17.25ZM12 5.52381C11.3038 5.52381 10.6361 5.76463 10.1438 6.19328C9.65156 6.62193 9.375 7.20331 9.375 7.80952V9.33333H14.625V7.80952C14.625 7.20331 14.3484 6.62193 13.8562 6.19328C13.3639 5.76463 12.6962 5.52381 12 5.52381Z"
+                fill="#6D6D6D"
+              />
+            </svg>
+          </div>
+        )}
+
+        {/* 채팅방 제목 */}
+        <div className="w-full overflow-hidden">
+          <p className="text-lg 2xl:text-xl font-semibold truncate">{title}</p>
+        </div>
       </div>
 
       {/* 채팅방 인원수 */}

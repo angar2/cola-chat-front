@@ -9,7 +9,7 @@ export default function CreateChatRoomBox() {
   const [roomTitle, setRoomTitle] = useState<string>('');
   const [roomPassword, setRoomPassword] = useState<string>('');
   const [selected, setSelected] = useState<number>(2);
-  const [isChecked, setIsChecked] = useState(false);
+  const [isPassword, setIsPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // 제목 입력 인풋
@@ -29,7 +29,8 @@ export default function CreateChatRoomBox() {
 
   // 비밀번호 설정 체크박스
   const handleCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsChecked(event.target.checked);
+    if(isPassword) setRoomPassword('')
+    setIsPassword(event.target.checked);
   };
 
   // 채팅방 생성 버튼
@@ -38,7 +39,7 @@ export default function CreateChatRoomBox() {
       setError('채팅방 제목을 입력해주세요.');
       return;
     }
-    if (isChecked && roomPassword.trim() === '') {
+    if (isPassword && roomPassword.trim() === '') {
       setError('비밀번호를 입력해주세요.');
       return;
     }
@@ -46,6 +47,8 @@ export default function CreateChatRoomBox() {
     const room = await createRoom({
       title: roomTitle,
       namespace: NAMESPACE,
+      isPassword,
+      password: roomPassword,
     });
     room && window.open(`/chat/${room.id}`, '_blank');
   };
@@ -131,7 +134,7 @@ export default function CreateChatRoomBox() {
           <div className="flex items-center gap-4 min-w-60 w-full">
             <input
               type="checkbox"
-              checked={isChecked}
+              checked={isPassword}
               onChange={handleCheckbox}
               className="form-checkbox h-4 w-4 text-blue-600 focus:ring-blue-500"
             />
@@ -139,8 +142,8 @@ export default function CreateChatRoomBox() {
               type="password"
               value={roomPassword}
               onChange={handleInputPassword}
-              placeholder={isChecked ? '비밀번호' : ''}
-              disabled={!isChecked}
+              placeholder={isPassword ? '비밀번호' : ''}
+              disabled={!isPassword}
               className="w-full px-2 py-1 border-[0.8px] border-g disabled:border-d focus:outline-none focus:ring-1 focus:ring-d placeholder:text-sm"
             />
           </div>

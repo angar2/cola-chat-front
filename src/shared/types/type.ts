@@ -7,6 +7,7 @@ export type Room = {
   createdAt: Date;
   expiresAt: Date;
   isExpired: boolean;
+  isPassword: boolean;
   userId: string | null;
 };
 
