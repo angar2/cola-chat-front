@@ -1,5 +1,5 @@
 import fetchApi from './api';
-import { Message, Room } from '../types/type';
+import { Chatter, Message, Room } from '../types/type';
 import { notFound } from 'next/navigation';
 
 const endpoint = '/chat';
@@ -24,7 +24,11 @@ export async function verifyRoomPassword(
   param: string,
   body: { password: string }
 ) {
-  const response = await fetchApi<Room>(`${endpoint}/rooms/${param}`, 'POST', body);
+  const response = await fetchApi<Room>(
+    `${endpoint}/rooms/${param}`,
+    'POST',
+    body
+  );
   return response.data;
 }
 
@@ -39,4 +43,16 @@ export async function getMessagesFromRoom(param: {
     'GET'
   );
   return response.data;
+}
+
+export async function updateNickname(
+  param: { chatterId: string },
+  body: { nickname: string }
+) {
+  const { chatterId } = param;
+  return await fetchApi<Chatter>(
+    `${endpoint}/chatters/${chatterId}/nickname`,
+    'PATCH',
+    body
+  );
 }

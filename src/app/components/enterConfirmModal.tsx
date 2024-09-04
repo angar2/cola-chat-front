@@ -47,7 +47,7 @@ export default function EnterConfirmModal(props: Props) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="w-64 2xl:w-80 p-6 rounded bg-a shadow-lg text-center">
+      <div className="w-fit min-w-48 px-6 pt-6 pb-4 rounded bg-a shadow-lg text-center">
         <h2 className="text-base 2xl:text-lg font-medium mb-4 whitespace-nowrap">
           채팅방에 입장하시겠습니까?
         </h2>

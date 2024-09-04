@@ -6,7 +6,7 @@ interface ApiResponse<T> {
   data: T | null;
 }
 
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export default async function fetchApi<T>(
   endpoint: string,
@@ -23,7 +23,7 @@ export default async function fetchApi<T>(
     });
 
     // const responseJson = response.json();
-    // if (!response.ok) return 
+    // if (!response.ok) return
     // if (!response.ok) {
     //   return {
     //     statusCode: response.status,

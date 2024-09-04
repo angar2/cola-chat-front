@@ -6,29 +6,25 @@ import MessageSender from './messageSender';
 import { Message, Room } from '@/shared/types/type';
 import { Socket } from 'socket.io-client';
 import MessageHeader from './messageHeader';
-import useMessageStore from '../hooks/useMessageStore';
-import useSocket from '../hooks/useSocket';
 import { getLocalRoomChatters } from '@/shared/utils/storage';
 import MessagePreview from './messagePreview';
 import { scrollToBottom } from '@/shared/utils/scroll';
 
 type Props = {
   room: Room;
+  messages: {
+    storageMessages: Message[];
+    newMessages: Message[];
+  };
+  nextPage: () => void;
+  socket: Socket;
 };
 
 export default function MessageContainer(props: Props) {
-  const { id: roomId, namespace } = props.room;
+  const { room, messages, nextPage, socket } = props;
 
   const [showMessagePreview, setShowMessagePreview] = useState(false);
   const [lastMessage, setLastMessage] = useState<Message>();
-
-  const { messages, addMessage, nextPage } = useMessageStore(roomId);
-
-  const handleMessage = (message: Message) => {
-    addMessage(message);
-  };
-
-  const socket: Socket | null = useSocket(roomId, namespace, handleMessage);
 
   const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
 
@@ -43,7 +39,7 @@ export default function MessageContainer(props: Props) {
         endOfMessagesRef={endOfMessagesRef}
       />
       <MessageSender
-        roomId={roomId}
+        roomId={room.id}
         socket={socket}
         endOfMessagesRef={endOfMessagesRef}
       />

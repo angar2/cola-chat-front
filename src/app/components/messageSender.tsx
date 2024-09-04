@@ -6,7 +6,7 @@ import { Socket } from 'socket.io-client';
 
 type Props = {
   roomId: string;
-  socket: Socket | null;
+  socket: Socket;
   endOfMessagesRef: RefObject<HTMLDivElement>;
 };
 

@@ -1,13 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import EnterConfirmModal from './enterConfirmModal';
-import { Room } from '@/shared/types/type';
-import {
-  getLocalRoomChatters,
-  saveLocalRoomChatters,
-} from '@/shared/utils/storage';
+import { Message, Room } from '@/shared/types/type';
 import MessageContainer from './messageContainer';
+import ChatRoomMenu from './chatRoomMenu';
+import { Socket } from 'socket.io-client';
+import useMessageStore from '../hooks/useMessageStore';
+import useSocket from '../hooks/useSocket';
 
 type Props = {
   room: Room;
@@ -16,28 +14,30 @@ type Props = {
 export default function ChatRoom(props: Props) {
   const { room } = props;
 
-  const [isEntryConfirmed, setIsEntryConfirmed] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { messages, nextPage, addMessage } = useMessageStore(room.id);
 
-  useEffect(() => {
-    setIsEntryConfirmed(room.id in getLocalRoomChatters());
-  }, []);
+  const handleMessage = (message: Message) => {
+    addMessage(message);
+  };
 
-  useEffect(() => {
-    setIsModalOpen(!isEntryConfirmed);
-  }, [isEntryConfirmed]);
+  const socket: Socket | null = useSocket(
+    room.id,
+    room.namespace,
+    handleMessage
+  );
 
   return (
-    room && (
-      <>
-        <EnterConfirmModal
-          isOpen={isModalOpen}
+    room &&
+    socket && (
+      <div className="flex w-full h-full ">
+        <MessageContainer
           room={room}
-          setIsEntryConfirmed={setIsEntryConfirmed}
+          messages={messages}
+          nextPage={nextPage}
+          socket={socket}
         />
-
-        {isEntryConfirmed && <MessageContainer room={room} />}
-      </>
+        <ChatRoomMenu room={room} socket={socket} />
+      </div>
     )
   );
 }

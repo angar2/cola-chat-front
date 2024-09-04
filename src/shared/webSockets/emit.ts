@@ -42,3 +42,14 @@ export function emitMessage(
     else return notFound();
   });
 }
+
+// 공지 전송
+export function emitPing(
+  socket: Socket,
+  data: { roomId: string; content: string },
+  callback?: () => void
+) {
+  socket.emit('ping', data, (response: WSResponse<null>) => {
+    if (response.success) callback && callback();
+  });
+}
