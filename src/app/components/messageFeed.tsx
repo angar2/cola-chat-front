@@ -9,26 +9,24 @@ import {
   getVisiblePosition,
   scrollToBottomByView,
 } from '@/shared/utils/scroll';
+import useMessageStore from '../stores/messageStore';
+import useRoomStore from '../stores/roomStore';
 
 type Props = {
-  messages: {
-    storageMessages: Message[];
-    newMessages: Message[];
-  };
-  nextPage: () => void;
   setShowMessagePreview: (value: boolean) => void;
   setLastMessage: (value: Message) => void;
   endOfMessagesRef: RefObject<HTMLDivElement>;
 };
 
 export default function MessageFeed(props: Props) {
-  const {
-    messages,
-    nextPage,
-    setShowMessagePreview,
-    setLastMessage,
-    endOfMessagesRef,
-  } = props;
+  const { setShowMessagePreview, setLastMessage, endOfMessagesRef } =
+    props;
+
+  const room = useRoomStore((state) => state.room);
+  if (!room) return;
+
+  const { messages, page, loadMessages } = useMessageStore();
+  const nextPage = useMessageStore((state) => state.nextPage);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -61,6 +59,11 @@ export default function MessageFeed(props: Props) {
       ref?.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // 메세지 로드
+  useEffect(() => {
+    loadMessages(room.id);
+  }, [page]);
 
   // 스크롤 위치 조정(저장된 메세지 로드)
   useEffect(() => {

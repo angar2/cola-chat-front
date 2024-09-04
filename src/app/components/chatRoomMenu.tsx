@@ -1,28 +1,28 @@
 'use client';
 
-import { Room } from '@/shared/types/type';
-import {
-  getLocalRoomChatters,
-  removeLocalRoomChatters,
-} from '@/shared/utils/storage';
+import { removeLocalRoomChatters } from '@/shared/utils/storage';
 import { emitLeave, emitPing } from '@/shared/webSockets/emit';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Socket } from 'socket.io-client';
 import LeaveRoomModal from './leaveRoomModal';
 import UpdateNicknameModal from './updateNicknameModal';
 import { updateNickname } from '@/shared/apis/chatApi';
 import { COMMENTS } from '@/shared/constants/comment';
 import CompleteModal from './completeModal';
+import useSocketStore from '../stores/socketStore';
+import useRoomStore from '../stores/roomStore';
+import useRoomChattersStore from '../stores/roomchatterStore';
 
-type Props = {
-  room: Room;
-  socket: Socket;
-};
-
-export default function ChatRoomMenu(props: Props) {
-  const { room, socket } = props;
+export default function ChatRoomMenu() {
+  const room = useRoomStore((state) => state.room);
+  if (!room) return;
   const { id: roomId } = room;
+  const roomChatters = useRoomChattersStore((state) => state.roomChatters);
+  const chatter = roomChatters[roomId];
+  const addRoomChatters = useRoomChattersStore(
+    (state) => state.addRoomChatters
+  );
+  const { socket } = useSocketStore();
 
   const router = useRouter();
 
@@ -53,32 +53,44 @@ export default function ChatRoomMenu(props: Props) {
 
     // 닉네임 변경
     const result = await updateNickname(
-      { chatterId: getLocalRoomChatters()[roomId] },
+      { chatterId: chatter.id },
       { nickname }
     );
     if (!result.success) {
       setError(result.message);
       return;
     }
-    const newNickname = result.data!.nickname;
+    if (result.data) {
+      const newNickname = result.data.nickname;
 
-    // 모달 닫기
-    setIsOpenUpdateModal(false);
-    setIsCompleteModal(true);
+      // 모달 닫기
+      setIsOpenUpdateModal(false);
+      setIsCompleteModal(true);
 
-    // 핑 전송
-    emitPing(socket, {
-      roomId,
-      content: COMMENTS.SOCKET.nicknameUpdated(newNickname, newNickname),
-    });
+      // 핑 전송
+      if (socket)
+        emitPing(
+          socket,
+          {
+            roomId,
+            content: COMMENTS.SOCKET.nicknameUpdated(
+              chatter.nickname,
+              newNickname
+            ),
+          },
+          () => addRoomChatters(roomId, result.data!)
+        );
+    }
   };
 
   // 채팅방 나가기
   const handleLeaveRoom = () => {
-    emitLeave(socket, { roomId }, () => {
-      removeLocalRoomChatters(roomId);
-      router.push('/');
-    });
+    if (socket)
+      emitLeave(socket, { roomId }, () => {
+        removeLocalRoomChatters(roomId);
+        delete roomChatters[roomId];
+        router.push('/');
+      });
   };
 
   return (

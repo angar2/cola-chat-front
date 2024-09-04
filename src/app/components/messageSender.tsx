@@ -2,23 +2,27 @@
 
 import { emitMessage } from '@/shared/webSockets/emit';
 import { KeyboardEvent, RefObject, useState } from 'react';
-import { Socket } from 'socket.io-client';
+import useSocketStore from '../stores/socketStore';
+import useRoomStore from '../stores/roomStore';
 
 type Props = {
-  roomId: string;
-  socket: Socket;
   endOfMessagesRef: RefObject<HTMLDivElement>;
 };
 
 export default function MessageSender(props: Props) {
-  const { roomId, socket, endOfMessagesRef } = props;
+  const { endOfMessagesRef } = props;
+
+  const room = useRoomStore((state) => state.room);
+  if (!room) return;
+
+  const { socket } = useSocketStore();
 
   const [content, setContent] = useState('');
 
-  //
+  // 메세지 전송
   const handleSend = () => {
     if (socket && content.trim() !== '') {
-      emitMessage(socket, { roomId, content }, () => {
+      emitMessage(socket, { roomId: room.id, content }, () => {
         setContent('');
         endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
       });

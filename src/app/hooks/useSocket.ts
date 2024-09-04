@@ -1,62 +1,71 @@
-import { useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { Message, Chatter } from '@/shared/types/type';
+import { useEffect } from 'react';
+import { io } from 'socket.io-client';
 import {
   getLocalRoomChatters,
   saveLocalRoomChatters,
 } from '@/shared/utils/storage';
 import { emitJoin, emitLeave } from '@/shared/webSockets/emit';
+import useSocketStore from '../stores/socketStore';
+import useMessageStore from '../stores/messageStore';
+import { Room } from '@/shared/types/type';
+import useRoomChattersStore from '../stores/roomchatterStore';
 
 const SOCKET_BASE_URL = process.env.NEXT_PUBLIC_SOCKET_BASE_URL as string;
 
-export default function useSocket(
-  roomId: string,
-  namespace: string,
-  onMessage: (message: Message) => void
-) {
-  const [socket, setSocket] = useState<Socket | null>(null);
+type Props = {
+  room: Room;
+};
+export default function useSocket(props: Props) {
+  const { id: roomId, namespace } = props.room;
+
+  const { socket, setSocket } = useSocketStore();
+  const addRoomChatters = useRoomChattersStore(
+    (state) => state.addRoomChatters
+  );
+  const addMessage = useMessageStore((state) => state.addMessage);
 
   useEffect(() => {
     if (!namespace) return;
 
-    const socket = io(`${SOCKET_BASE_URL}/${namespace}`, {
+    const socketInstance = io(`${SOCKET_BASE_URL}/${namespace}`, {
       transports: ['websocket'],
       autoConnect: false,
     });
 
     // 소켓 연결
-    socket.connect();
+    socketInstance.connect();
 
-    socket.on('connect', () => {
+    socketInstance.on('connect', () => {
       console.log('Connected to WebSocket server');
+      setSocket(socketInstance);
 
       // 채팅방 입장
       emitJoin(
-        socket,
+        socketInstance,
         { roomId, chatterId: getLocalRoomChatters()[roomId] },
-        (param1, param2) => saveLocalRoomChatters(param1, param2)
+        (param1, param2) => saveLocalRoomChatters(param1, param2),
+        (param1, param2) => addRoomChatters(param1, param2)
       );
     });
 
-    socket.on('disconnect', () => {
+    socketInstance.on('disconnect', () => {
       console.log('Disconnected from WebSocket server');
+      setSocket(null);
     });
 
-    socket.on('ping', (message) => {
+    socketInstance.on('ping', (message) => {
       console.log('New ping:', message);
-      onMessage(message);
+      addMessage(message);
     });
 
-    socket.on('message', (message) => {
+    socketInstance.on('message', (message) => {
       console.log('New message:', message);
-      onMessage(message);
+      addMessage(message);
     });
-
-    setSocket(socket);
 
     const handleBeforeUnload = () => {
       // 채팅방 퇴장
-      emitLeave(socket, { roomId }, () => setSocket(null));
+      emitLeave(socketInstance, { roomId }, () => setSocket(null));
     };
 
     // 페이지 이벤트 설정(방 퇴장)
@@ -67,9 +76,7 @@ export default function useSocket(
       window.removeEventListener('beforeunload', handleBeforeUnload);
 
       // 소켓 연결 해제
-      socket.disconnect();
+      if (socket) socket.disconnect();
     };
   }, [namespace, roomId]);
-
-  return socket;
 }

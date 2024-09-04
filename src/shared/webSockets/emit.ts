@@ -12,11 +12,14 @@ interface WSResponse<T> {
 export function emitJoin(
   socket: Socket,
   data: { roomId: string; chatterId: string },
-  callback: (param1: string, param2: string) => void
+  callback1: (param1: string, param2: string) => void,
+  callback2: (param1: string, param2: Chatter) => void
 ) {
   socket.emit('join', data, (response: WSResponse<Chatter>) => {
-    if (response.success) callback(data.roomId, response.data.id);
-    else return notFound();
+    if (response.success) {
+      callback1(data.roomId, response.data.id);
+      callback2(data.roomId, response.data);
+    } else return notFound();
   });
 }
 

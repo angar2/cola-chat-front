@@ -1,13 +1,11 @@
 'use client';
 
-import { Room } from '@/shared/types/type';
+import useRoomStore from '../stores/roomStore';
 
-type Props = {
-  room: Room;
-};
-
-export default function MessageHeader(props: Props) {
-  const { title, isPassword } = props.room;
+export default function MessageHeader() {
+  const room = useRoomStore((state) => state.room);
+  if (!room) return;
+  const { title, isPassword } = room;
 
   return (
     <div className="flex-none flex flex-col w-full h-fit px-5 2xl:px-6 py-2 2xl:py-4 gap-2 border-b-[0.4px] border-c border-opacity-50">
