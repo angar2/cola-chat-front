@@ -11,13 +11,13 @@ type Props = {
 export default function MessageBox(props: Props) {
   const { message } = props;
 
-  const sentAt = new Date(message.sentAt);
+  const originDate = new Date(message.sentAt);
   const formatter = new Intl.DateTimeFormat('ko-KR', {
-    hour: '2-digit',
+    hour: 'numeric',
     minute: '2-digit',
     timeZone: 'Asia/Seoul',
   });
-  const date = formatter.format(sentAt);
+  const date = formatter.format(originDate);
 
   const isMine = getLocalRoomChatters()[message.roomId] === message.chatter.id;
 
@@ -38,8 +38,8 @@ export default function MessageBox(props: Props) {
     </div>
   ) : (
     // 핑일 경우
-    <div className="flex justify-center p-2 rounded">
-      <div className="px-3 py-1">
+    <div className="flex justify-center gap-2 p-3 rounded">
+      <div className="">
         <p className="text-sm text-c whitespace-pre-wrap">{message.content}</p>
       </div>
       <div className="flex w-fit items-center">

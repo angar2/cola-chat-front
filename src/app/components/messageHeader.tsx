@@ -5,7 +5,30 @@ import useRoomStore from '../stores/roomStore';
 export default function MessageHeader() {
   const room = useRoomStore((state) => state.room);
   if (!room) return;
-  const { title, isPassword } = room;
+  const { title, isPassword, expiresAt } = room;
+
+  const originDate = new Date(expiresAt);
+
+  const formatter = new Intl.DateTimeFormat('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Seoul',
+  });
+  const formattedDateParts = formatter.formatToParts(originDate);
+
+  const year = formattedDateParts.find((part) => part.type === 'year')?.value;
+  const month = formattedDateParts.find((part) => part.type === 'month')?.value;
+  const day = formattedDateParts.find((part) => part.type === 'day')?.value;
+  const hour = formattedDateParts.find((part) => part.type === 'hour')?.value;
+  const minute = formattedDateParts.find(
+    (part) => part.type === 'minute'
+  )?.value;
+
+  const date = `${year}-${month}-${day} ${hour}:${minute}`;
 
   return (
     <div className="flex-none flex flex-col w-full h-fit px-5 2xl:px-6 py-2 2xl:py-4 gap-2 border-b-[0.4px] border-c border-opacity-50">
@@ -35,23 +58,42 @@ export default function MessageHeader() {
         </div>
       </div>
 
-      {/* 채팅방 인원수 */}
-      <div className="flex gap-1">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-5 h-5 2xl:w-6 2xl:h-6 text-c"
-        >
-          <path
-            d="M12 4C13.0609 4 14.0783 4.42143 14.8284 5.17157C15.5786 5.92172 16 6.93913 16 8C16 9.06087 15.5786 10.0783 14.8284 10.8284C14.0783 11.5786 13.0609 12 12 12C10.9391 12 9.92172 11.5786 9.17157 10.8284C8.42143 10.0783 8 9.06087 8 8C8 6.93913 8.42143 5.92172 9.17157 5.17157C9.92172 4.42143 10.9391 4 12 4ZM12 14C16.42 14 20 15.79 20 18V20H4V18C4 15.79 7.58 14 12 14Z"
-            fill="currentColor"
-          />
-        </svg>
+      <div className="flex justify-between">
+        {/* 채팅방 인원수 */}
+        <div className="flex gap-1">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-5 h-5 2xl:w-6 2xl:h-6 text-c"
+          >
+            <path
+              d="M12 4C13.0609 4 14.0783 4.42143 14.8284 5.17157C15.5786 5.92172 16 6.93913 16 8C16 9.06087 15.5786 10.0783 14.8284 10.8284C14.0783 11.5786 13.0609 12 12 12C10.9391 12 9.92172 11.5786 9.17157 10.8284C8.42143 10.0783 8 9.06087 8 8C8 6.93913 8.42143 5.92172 9.17157 5.17157C9.92172 4.42143 10.9391 4 12 4ZM12 14C16.42 14 20 15.79 20 18V20H4V18C4 15.79 7.58 14 12 14Z"
+              fill="currentColor"
+            />
+          </svg>
+          <span className="text-sm 2xl:text-base text-c">2/2</span>
+        </div>
 
-        <span className="text-sm 2xl:text-base text-c">2/2</span>
+        {/* 채팅방 만료기한 */}
+        <div className="flex items-center gap-1">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4 2xl:w-5 2xl:h-5 text-c"
+          >
+            <path
+              d="M12 20C10.1435 20 8.36301 19.2625 7.05025 17.9497C5.7375 16.637 5 14.8565 5 13C5 11.1435 5.7375 9.36301 7.05025 8.05025C8.36301 6.7375 10.1435 6 12 6C13.8565 6 15.637 6.7375 16.9497 8.05025C18.2625 9.36301 19 11.1435 19 13C19 14.8565 18.2625 16.637 16.9497 17.9497C15.637 19.2625 13.8565 20 12 20ZM19.03 7.39L20.45 5.97C20 5.46 19.55 5 19.04 4.56L17.62 6C16.07 4.74 14.12 4 12 4C9.61305 4 7.32387 4.94821 5.63604 6.63604C3.94821 8.32387 3 10.6131 3 13C3 15.3869 3.94821 17.6761 5.63604 19.364C7.32387 21.0518 9.61305 22 12 22C17 22 21 17.97 21 13C21 10.88 20.26 8.93 19.03 7.39ZM11 14H13V8H11M15 1H9V3H15V1Z"
+              fill="currentColor"
+            />
+          </svg>
+          <span className="text-xs 2xl:text-sm text-c">{date}</span>
+        </div>
       </div>
     </div>
   );
