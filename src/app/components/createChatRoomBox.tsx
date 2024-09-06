@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { createRoom } from '@/shared/apis/chatApi';
+import { Tooltip } from 'react-tooltip';
 
 const NAMESPACE = 'anonymous';
 const headCount = [2, 4, 8, 16];
@@ -29,7 +30,7 @@ export default function CreateChatRoomBox() {
 
   // 비밀번호 설정 체크박스
   const handleCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if(isPassword) setRoomPassword('')
+    if (isPassword) setRoomPassword('');
     setIsPassword(event.target.checked);
   };
 
@@ -59,7 +60,7 @@ export default function CreateChatRoomBox() {
       <div className="flex flex-col justify items-start w-full p-4 bg-a text-g rounded-sm">
         {/* 채팅방 제목 입력 */}
         <div className="flex items-center gap-4">
-          <div className="p-2">
+          <div className="p-2" id="title">
             <svg
               width="24"
               height="24"
@@ -70,6 +71,7 @@ export default function CreateChatRoomBox() {
             >
               <path d="M5 4V7H10.5V19H13.5V7H19V4H5Z" fill="currentColor" />
             </svg>
+            <Tooltip anchorSelect="#title" delayShow={500} content="제목" />
           </div>
           <div className="w-full">
             <input
@@ -84,7 +86,7 @@ export default function CreateChatRoomBox() {
 
         {/* 인원수 선택 */}
         <div className="flex items-center gap-4">
-          <div className="p-2">
+          <div className="p-2" id="capacity">
             <svg
               width="24"
               height="24"
@@ -98,6 +100,11 @@ export default function CreateChatRoomBox() {
                 fill="currentColor"
               />
             </svg>
+            <Tooltip
+              anchorSelect="#capacity"
+              delayShow={500}
+              content="인원수"
+            />
           </div>
           <div className="flex gap-6">
             {headCount.map((count) => (
@@ -117,7 +124,7 @@ export default function CreateChatRoomBox() {
 
         {/* 비밀번호 입력 */}
         <div className="flex items-center gap-4 w-full">
-          <div className="p-2">
+          <div className="p-2" id="password">
             <svg
               width="24"
               height="24"
@@ -131,6 +138,11 @@ export default function CreateChatRoomBox() {
                 fill="currentColor"
               />
             </svg>
+            <Tooltip
+              anchorSelect="#password"
+              delayShow={500}
+              content="비밀번호"
+            />
           </div>
           <div className="flex items-center gap-4 min-w-60 w-full">
             <input
@@ -155,7 +167,7 @@ export default function CreateChatRoomBox() {
       <div className="w-full">
         <button
           onClick={handleClick}
-          className="w-full px-12 py-4 bg-d text-f text-2xl font-extrabold rounded"
+          className="w-full px-12 py-4 bg-d text-f text-2xl font-extrabold rounded active:scale-95"
         >
           Open Cola Chat
         </button>

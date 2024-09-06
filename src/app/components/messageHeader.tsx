@@ -1,6 +1,7 @@
 'use client';
 
 import useRoomStore from '../stores/roomStore';
+import { Tooltip } from 'react-tooltip';
 
 export default function MessageHeader() {
   const room = useRoomStore((state) => state.room);
@@ -39,7 +40,7 @@ export default function MessageHeader() {
       <div className="flex items-center gap-1">
         {/* 채팅방 잠금 */}
         {isPassword && (
-          <div className="flex">
+          <div className="flex" id="lock">
             <svg
               width="24"
               height="24"
@@ -55,6 +56,11 @@ export default function MessageHeader() {
             </svg>
           </div>
         )}
+        <Tooltip
+          anchorSelect="#lock"
+          delayShow={500}
+          content="암호가 설정된 채팅방"
+        />
 
         {/* 채팅방 제목 */}
         <div className="w-full overflow-hidden">
@@ -64,7 +70,7 @@ export default function MessageHeader() {
 
       <div className="flex justify-between">
         {/* 채팅방 인원수 */}
-        <div className="flex gap-1">
+        <div className="flex gap-1" id="headcount">
           <svg
             width="24"
             height="24"
@@ -81,10 +87,14 @@ export default function MessageHeader() {
           <span className="text-sm 2xl:text-base text-c">
             {onlineBycapacity}
           </span>
+          <Tooltip
+            anchorSelect="#headcount"
+            delayShow={500}
+            content="현재 인원수"
+          />
         </div>
-
         {/* 채팅방 만료기한 */}
-        <div className="flex items-center gap-1">
+        <div className="flex justify-start items-center gap-1" id="expiration">
           <svg
             width="24"
             height="24"
@@ -99,6 +109,11 @@ export default function MessageHeader() {
             />
           </svg>
           <span className="text-xs 2xl:text-sm text-c">{date}</span>
+          <Tooltip
+            anchorSelect="#expiration"
+            delayShow={500}
+            content="채팅방 만료기한"
+          />
         </div>
       </div>
     </div>

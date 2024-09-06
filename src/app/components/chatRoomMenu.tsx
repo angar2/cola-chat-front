@@ -12,6 +12,7 @@ import CompleteModal from './completeModal';
 import useSocketStore from '../stores/socketStore';
 import useRoomStore from '../stores/roomStore';
 import useRoomChattersStore from '../stores/roomchatterStore';
+import { Tooltip } from 'react-tooltip';
 
 export default function ChatRoomMenu() {
   const room = useRoomStore((state) => state.room);
@@ -96,7 +97,12 @@ export default function ChatRoomMenu() {
   return (
     <div className="h-full pt-2">
       <div className="flex flex-col gap-3 w-full h-full px-2 py-3 bg-d bg-opacity-40 text-g rounded-r">
-        <button className="p-1 active:scale-90" onClick={handleCopyUrl}>
+        {/* URL 복사 */}
+        <button
+          className="p-1 active:scale-90"
+          onClick={handleCopyUrl}
+          id="copy"
+        >
           <svg
             width="24"
             height="24"
@@ -110,8 +116,19 @@ export default function ChatRoomMenu() {
               fill="currentColor"
             />
           </svg>
+          <Tooltip
+            anchorSelect="#copy"
+            delayShow={500}
+            content="채팅방 URL 복사"
+          />
         </button>
-        <button className="p-1 active:scale-90" onClick={handleUpdateModal}>
+
+        {/* 닉네임 변경 */}
+        <button
+          className="p-1 active:scale-90"
+          onClick={handleUpdateModal}
+          id="nickname"
+        >
           <svg
             width="24"
             height="24"
@@ -125,9 +142,20 @@ export default function ChatRoomMenu() {
               fill="currentColor"
             />
           </svg>
+          <Tooltip
+            anchorSelect="#nickname"
+            delayShow={500}
+            content="닉네임 변경"
+          />
         </button>
         <hr className="border-d" />
-        <button className="p-1 active:scale-90" onClick={handleLeaveModal}>
+
+        {/* 채팅방 나가기 */}
+        <button
+          className="p-1 active:scale-90"
+          onClick={handleLeaveModal}
+          id="leave"
+        >
           <svg
             width="20"
             height="20"
@@ -141,6 +169,11 @@ export default function ChatRoomMenu() {
               fill="currentColor"
             />
           </svg>
+          <Tooltip
+            anchorSelect="#leave"
+            delayShow={500}
+            content="채팅방 나가기"
+          />
         </button>
       </div>
       {isOpenLeaveModal && (

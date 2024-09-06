@@ -55,7 +55,7 @@ export default function MessageSender(props: Props) {
           type="button"
           onClick={handleSend}
           disabled={!socket}
-          className=""
+          className="active:scale-90"
         >
           <svg
             width="36"
