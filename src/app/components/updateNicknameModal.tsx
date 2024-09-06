@@ -1,3 +1,4 @@
+import { LIMIT } from '@/shared/constants/limit';
 import React, { useState } from 'react';
 
 type Props = {
@@ -46,6 +47,7 @@ export default function UpdateNicknameModal(props: Props) {
               value={value}
               onChange={handleInput}
               placeholder={error || '새로운 닉네임'}
+              maxLength={LIMIT.NICKNAME}
               className={`w-[80%] px-2 py-1 border-[0.8px] border-g disabled:border-d focus:outline-none focus:ring-1 focus:ring-d placeholder:text-sm placeholder:text-center ${
                 error && 'placeholder:text-e'
               }`}

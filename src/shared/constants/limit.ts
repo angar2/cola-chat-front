@@ -1,0 +1,6 @@
+export const LIMIT = {
+  ROOM_TITLE: 30,
+  ROOM_PASSWORD: 12,
+  NICKNAME: 10,
+  MESSAGE: 1000,
+};

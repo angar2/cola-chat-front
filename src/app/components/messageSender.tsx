@@ -4,6 +4,7 @@ import { emitMessage } from '@/shared/webSockets/emit';
 import { KeyboardEvent, RefObject, useState } from 'react';
 import useSocketStore from '../stores/socketStore';
 import useRoomStore from '../stores/roomStore';
+import { LIMIT } from '@/shared/constants/limit';
 
 type Props = {
   endOfMessagesRef: RefObject<HTMLDivElement>;
@@ -48,6 +49,7 @@ export default function MessageSender(props: Props) {
         value={content}
         onChange={(e) => setContent(e.target.value)}
         onKeyPress={handleKeyDown}
+        maxLength={LIMIT.MESSAGE}
         className="w-full h-full outline-none resize-none"
       />
       <div className="flex items-end">

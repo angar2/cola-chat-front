@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { createRoom } from '@/shared/apis/chatApi';
 import { Tooltip } from 'react-tooltip';
+import { LIMIT } from '@/shared/constants/limit';
 
 const NAMESPACE = 'anonymous';
 const headCount = [2, 4, 8, 16];
@@ -82,6 +83,7 @@ export default function CreateChatRoomBox() {
               value={roomTitle}
               onChange={handleInputTitle}
               placeholder="채팅방 제목"
+              maxLength={LIMIT.ROOM_TITLE}
               className="min-w-60 w-full px-2 py-1 border-[0.8px] border-g focus:outline-none focus:ring-1 focus:ring-d placeholder:text-sm"
             />
           </div>
@@ -160,6 +162,7 @@ export default function CreateChatRoomBox() {
               onChange={handleInputPassword}
               placeholder={isPassword ? '비밀번호' : ''}
               disabled={!isPassword}
+              maxLength={LIMIT.ROOM_PASSWORD}
               className="w-full px-2 py-1 border-[0.8px] border-g disabled:border-d focus:outline-none focus:ring-1 focus:ring-d placeholder:text-sm"
             />
           </div>
