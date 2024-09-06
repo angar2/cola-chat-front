@@ -10,6 +10,7 @@ import useMessageStore from '../stores/messageStore';
 import { Room } from '@/shared/types/type';
 import useRoomChattersStore from '../stores/roomchatterStore';
 import useRoomStore from '../stores/roomStore';
+import { SocketEvent } from '@/shared/types/enum';
 
 const SOCKET_BASE_URL = process.env.NEXT_PUBLIC_SOCKET_BASE_URL as string;
 
@@ -37,7 +38,7 @@ export default function useSocket(props: Props) {
     // 소켓 연결
     socketInstance.connect();
 
-    socketInstance.on('connect', () => {
+    socketInstance.on(SocketEvent.CONNECT, () => {
       console.log('Connected to WebSocket server');
       setSocket(socketInstance);
 
@@ -50,23 +51,25 @@ export default function useSocket(props: Props) {
       );
     });
 
-    socketInstance.on('disconnect', () => {
+    socketInstance.on(SocketEvent.DISCONNECT, () => {
       console.log('Disconnected from WebSocket server');
       setSocket(null);
     });
 
-    socketInstance.on('ping', (message) => {
-      console.log('New ping:', message);
-      addMessage(message);
+    socketInstance.on(SocketEvent.ALERT, (data) => {
+      addMessage(data);
     });
 
-    socketInstance.on('message', (message) => {
-      console.log('New message:', message);
-      addMessage(message);
+    socketInstance.on(SocketEvent.MESSAGE, (data) => {
+      addMessage(data);
     });
 
-    socketInstance.on('chatters', (data) => {
+    socketInstance.on(SocketEvent.CHATTERS, (data) => {
       setChatters(data);
+    });
+
+    socketInstance.on(SocketEvent.Error, (data) => {
+      console.log('Websocket Error', JSON.parse(data));
     });
 
     const handleBeforeUnload = () => {

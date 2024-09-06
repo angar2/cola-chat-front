@@ -1,9 +1,15 @@
 export enum SocketEvent {
-  MESSAGE = 'message',
-  PING = 'ping',
+  CONNECT = 'connect',
+  DISCONNECT = 'disconnect',
+  JOIN = 'joinRoom',
+  LEAVE = 'leaveRoom',
+  MESSAGE = 'sendMessage',
+  ALERT = 'sendAlert',
+  CHATTERS = 'returnChatters',
+  Error = 'message',
 }
 
 export enum MessageType {
   MESSAGE = 'MESSAGE',
-  PING = 'PING',
+  ALERT = 'ALERT',
 }

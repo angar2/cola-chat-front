@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io-client';
 import { Chatter } from '../types/type';
 import { notFound } from 'next/navigation';
+import { SocketEvent } from '../types/enum';
 
 interface WSResponse<T> {
   success: boolean;
@@ -15,7 +16,7 @@ export function emitJoin(
   callback1: (param1: string, param2: string) => void,
   callback2: (param1: string, param2: Chatter) => void
 ) {
-  socket.emit('join', data, (response: WSResponse<Chatter>) => {
+  socket.emit(SocketEvent.JOIN, data, (response: WSResponse<Chatter>) => {
     if (response.success) {
       callback1(data.roomId, response.data.id);
       callback2(data.roomId, response.data);
@@ -29,7 +30,7 @@ export function emitLeave(
   data: { roomId: string },
   callback?: () => void
 ) {
-  socket.emit('leave', data, (response: WSResponse<null>) => {
+  socket.emit(SocketEvent.LEAVE, data, (response: WSResponse<null>) => {
     if (response.success) callback && callback();
   });
 }
@@ -40,7 +41,7 @@ export function emitMessage(
   data: { roomId: string; content: string },
   callback?: () => void
 ) {
-  socket.emit('message', data, (response: WSResponse<null>) => {
+  socket.emit(SocketEvent.MESSAGE, data, (response: WSResponse<null>) => {
     if (response.success) callback && callback();
     else return notFound();
   });
@@ -52,7 +53,7 @@ export function emitPing(
   data: { roomId: string; content: string },
   callback?: () => void
 ) {
-  socket.emit('ping', data, (response: WSResponse<null>) => {
+  socket.emit(SocketEvent.ALERT, data, (response: WSResponse<null>) => {
     if (response.success) callback && callback();
   });
 }
