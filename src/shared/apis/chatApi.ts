@@ -7,6 +7,7 @@ const endpoint = '/chat';
 export async function createRoom(body: {
   title: string;
   namespace: string;
+  capacity: number;
   isPassword: boolean;
   password: string;
 }) {
@@ -18,6 +19,18 @@ export async function getRoom(param: string) {
   const response = await fetchApi<Room>(`${endpoint}/rooms/${param}`, 'GET');
   if (!response.success) return notFound();
   return response.data;
+}
+
+export async function validateRoomEntry(
+  param: string,
+  body: { password?: string }
+) {
+  const response = await fetchApi<boolean>(
+    `${endpoint}/rooms/${param}/access-check`,
+    'POST',
+    body
+  );
+  return response;
 }
 
 export async function verifyRoomPassword(

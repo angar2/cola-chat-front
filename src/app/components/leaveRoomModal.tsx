@@ -36,9 +36,12 @@ export default function LeaveRoomModal(props: Props) {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="w-fit min-w-48 px-6 pt-6 pb-4 rounded bg-a shadow-lg text-center">
-        <h2 className="text-base 2xl:text-lg font-medium mb-4 whitespace-nowrap">
+        <h2 className="text-base 2xl:text-lg text-g font-medium mb-2 whitespace-nowrap">
           채팅방에서 나가시겠습니까?
         </h2>
+        <h3 className="text-sm 2xl:text-base text-c font-medium mb-4 whitespace-nowrap">
+          대화 내용은 모두 사라집니다.
+        </h3>
         {isInput && (
           <div className="mb-4">
             <input

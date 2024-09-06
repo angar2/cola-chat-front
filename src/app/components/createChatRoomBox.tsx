@@ -47,6 +47,7 @@ export default function CreateChatRoomBox() {
     const room = await createRoom({
       title: roomTitle,
       namespace: NAMESPACE,
+      capacity: selected,
       isPassword,
       password: roomPassword,
     });

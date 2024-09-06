@@ -4,6 +4,7 @@ export type Room = {
   id: string;
   title: string;
   namespace: string;
+  capacity: number;
   createdAt: Date;
   expiresAt: Date;
   isExpired: boolean;

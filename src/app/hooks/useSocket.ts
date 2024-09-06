@@ -9,6 +9,7 @@ import useSocketStore from '../stores/socketStore';
 import useMessageStore from '../stores/messageStore';
 import { Room } from '@/shared/types/type';
 import useRoomChattersStore from '../stores/roomchatterStore';
+import useRoomStore from '../stores/roomStore';
 
 const SOCKET_BASE_URL = process.env.NEXT_PUBLIC_SOCKET_BASE_URL as string;
 
@@ -19,6 +20,7 @@ export default function useSocket(props: Props) {
   const { id: roomId, namespace } = props.room;
 
   const { socket, setSocket } = useSocketStore();
+  const setChatters = useRoomStore((state) => state.setChatters);
   const addRoomChatters = useRoomChattersStore(
     (state) => state.addRoomChatters
   );
@@ -61,6 +63,10 @@ export default function useSocket(props: Props) {
     socketInstance.on('message', (message) => {
       console.log('New message:', message);
       addMessage(message);
+    });
+
+    socketInstance.on('chatters', (data) => {
+      setChatters(data);
     });
 
     const handleBeforeUnload = () => {

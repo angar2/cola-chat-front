@@ -1,4 +1,4 @@
-import { verifyRoomPassword } from '@/shared/apis/chatApi';
+import { validateRoomEntry, verifyRoomPassword } from '@/shared/apis/chatApi';
 import { Room } from '@/shared/types/type';
 import { saveLocalRoomChatters } from '@/shared/utils/storage';
 import { useRouter } from 'next/navigation';
@@ -8,10 +8,18 @@ type Props = {
   isOpen: boolean;
   room: Room;
   setIsEntryConfirmed: (value: boolean) => void;
+  setIsErrorModalOpen: (value: boolean) => void;
+  setEerrorMessage: (value: string) => void;
 };
 
 export default function EnterConfirmModal(props: Props) {
-  const { isOpen, room, setIsEntryConfirmed } = props;
+  const {
+    isOpen,
+    room,
+    setIsEntryConfirmed,
+    setIsErrorModalOpen,
+    setEerrorMessage,
+  } = props;
   if (!isOpen) return null;
 
   const router = useRouter();
@@ -26,14 +34,15 @@ export default function EnterConfirmModal(props: Props) {
 
   // 채팅방 입장 o
   const handleConfirm = async () => {
-    if (room.isPassword) {
-      // 비밀번호 검증
-      const isVerified = await verifyRoomPassword(room.id, { password });
-      if (!isVerified) {
-        setPassword('');
-        setPasswordError(true);
-        return;
-      }
+    const result = await validateRoomEntry(room.id, { password });
+    if (!result.success) {
+      setEerrorMessage(result.message);
+      setIsErrorModalOpen(true);
+    }
+    if (!result.data) {
+      setPassword('');
+      setPasswordError(true);
+      return;
     }
 
     saveLocalRoomChatters(room.id);

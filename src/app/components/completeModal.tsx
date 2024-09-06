@@ -8,7 +8,6 @@ type Props = {
   setError: (value: string) => void;
   handleCallback: (value?: string) => void;
 };
-4;
 export default function CompleteModal(props: Props) {
   const {
     isOpen,

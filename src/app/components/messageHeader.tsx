@@ -7,6 +7,8 @@ export default function MessageHeader() {
   if (!room) return;
   const { title, isPassword, expiresAt } = room;
 
+  const chatters = useRoomStore((state) => state.chatters);
+
   const originDate = new Date(expiresAt);
 
   const formatter = new Intl.DateTimeFormat('ko-KR', {
@@ -29,6 +31,8 @@ export default function MessageHeader() {
   )?.value;
 
   const date = `${year}-${month}-${day} ${hour}:${minute}`;
+
+  const onlineBycapacity = `${chatters?.length || 0}/${room.capacity}`;
 
   return (
     <div className="flex-none flex flex-col w-full h-fit px-5 2xl:px-6 py-2 2xl:py-4 gap-2 border-b-[0.4px] border-c border-opacity-50">
@@ -74,7 +78,9 @@ export default function MessageHeader() {
               fill="currentColor"
             />
           </svg>
-          <span className="text-sm 2xl:text-base text-c">2/2</span>
+          <span className="text-sm 2xl:text-base text-c">
+            {onlineBycapacity}
+          </span>
         </div>
 
         {/* 채팅방 만료기한 */}
