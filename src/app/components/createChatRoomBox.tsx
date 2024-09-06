@@ -52,7 +52,10 @@ export default function CreateChatRoomBox() {
       isPassword,
       password: roomPassword,
     });
-    room && window.open(`/chat/${room.id}`, '_blank');
+    if (room) {
+      window.location.reload();
+      window.open(`/chat/${room.id}`, '_blank');
+    }
   };
 
   return (
