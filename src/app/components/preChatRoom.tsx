@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react';
 import EnterConfirmModal from './enterConfirmModal';
 import { Room } from '@/shared/types/type';
-import { getLocalRoomChatters } from '@/shared/utils/storage';
+import { getSessionRoomChatters } from '@/shared/utils/storage';
 import ChatRoom from './chatRoom';
 import ErrorModal from './errorModal';
+import { checkReentry } from '@/shared/apis/chatApi';
 
 type Props = {
   room: Room;
@@ -20,7 +21,13 @@ export default function preChatRoom(props: Props) {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    setIsEntryConfirmed(room.id in getLocalRoomChatters());
+    (async () => {
+      const isReentry = !!(await checkReentry({
+        roomId: room.id,
+        chatterId: getSessionRoomChatters()[room.id],
+      }));
+      setIsEntryConfirmed(isReentry);
+    })();
   }, []);
 
   useEffect(() => {

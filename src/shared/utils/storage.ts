@@ -1,21 +1,21 @@
 // 로컬스토리지에서 roomChatters 가져오기
-export function getLocalRoomChatters(): { [key: string]: string } {
-  return JSON.parse(localStorage.getItem('room') || '{}');
+export function getSessionRoomChatters(): { [key: string]: string } {
+  return JSON.parse(sessionStorage.getItem('room') || '{}');
 }
 
 // 로컬스토리지에 roomChatters 저장
-export function saveLocalRoomChatters(
+export function saveSessionRoomChatters(
   roomId: string,
   chatterId: string = ''
 ): void {
-  const data = getLocalRoomChatters();
+  const data = getSessionRoomChatters();
   data[roomId] = chatterId;
-  localStorage.setItem('room', JSON.stringify(data));
+  sessionStorage.setItem('room', JSON.stringify(data));
 }
 
 // 로컬스토리지에 roomChatters 삭제
-export function removeLocalRoomChatters(roomId: string): void {
-  const data = getLocalRoomChatters();
+export function removeSessionRoomChatters(roomId: string): void {
+  const data = getSessionRoomChatters();
   delete data[roomId];
-  localStorage.setItem('room', JSON.stringify(data));
+  sessionStorage.setItem('room', JSON.stringify(data));
 }

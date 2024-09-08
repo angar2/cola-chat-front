@@ -1,6 +1,6 @@
 import { validateRoomEntry, verifyRoomPassword } from '@/shared/apis/chatApi';
 import { Room } from '@/shared/types/type';
-import { saveLocalRoomChatters } from '@/shared/utils/storage';
+import { saveSessionRoomChatters } from '@/shared/utils/storage';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
@@ -45,7 +45,7 @@ export default function EnterConfirmModal(props: Props) {
       return;
     }
 
-    saveLocalRoomChatters(room.id);
+    saveSessionRoomChatters(room.id);
     setIsEntryConfirmed(true);
   };
 

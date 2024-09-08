@@ -45,6 +45,18 @@ export async function verifyRoomPassword(
   return response.data;
 }
 
+export async function checkReentry(param: {
+  roomId: string;
+  chatterId: string;
+}) {
+  const { roomId, chatterId } = param;
+  const response = await fetchApi<boolean>(
+    `${endpoint}/rooms/${roomId}/${chatterId}/reentry-check`,
+    'GET'
+  );
+  return response.data;
+}
+
 export async function getMessagesFromRoom(param: {
   roomId: string;
   page: number;

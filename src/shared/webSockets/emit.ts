@@ -48,7 +48,7 @@ export function emitMessage(
 }
 
 // 공지 전송
-export function emitPing(
+export function emitAlert(
   socket: Socket,
   data: { roomId: string; content: string },
   callback?: () => void

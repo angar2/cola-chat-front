@@ -1,1 +1,2 @@
 export const SCROLL_BOTTOM_LIMIT = 100;
+export const LEAVE_MESSAGE_DELAY_TIME = 1000;

@@ -1,7 +1,7 @@
 'use client';
 
-import { removeLocalRoomChatters } from '@/shared/utils/storage';
-import { emitLeave, emitPing } from '@/shared/webSockets/emit';
+import { removeSessionRoomChatters } from '@/shared/utils/storage';
+import { emitAlert } from '@/shared/webSockets/emit';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import LeaveRoomModal from './leaveRoomModal';
@@ -70,7 +70,7 @@ export default function ChatRoomMenu() {
 
       // 핑 전송
       if (socket)
-        emitPing(
+        emitAlert(
           socket,
           {
             roomId,
@@ -86,12 +86,11 @@ export default function ChatRoomMenu() {
 
   // 채팅방 나가기
   const handleLeaveRoom = () => {
-    if (socket)
-      emitLeave(socket, { roomId }, () => {
-        removeLocalRoomChatters(roomId);
-        delete roomChatters[roomId];
-        router.push('/');
-      });
+    if (socket) {
+      removeSessionRoomChatters(roomId);
+      delete roomChatters[roomId];
+      router.push('/');
+    }
   };
 
   return (

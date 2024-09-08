@@ -2,7 +2,7 @@
 
 import { MessageType } from '@/shared/types/enum';
 import { Message } from '@/shared/types/type';
-import { getLocalRoomChatters } from '@/shared/utils/storage';
+import { getSessionRoomChatters } from '@/shared/utils/storage';
 
 type Props = {
   message: Message;
@@ -19,7 +19,8 @@ export default function MessageBox(props: Props) {
   });
   const date = formatter.format(originDate);
 
-  const isMine = getLocalRoomChatters()[message.roomId] === message.chatter.id;
+  const isMine =
+    getSessionRoomChatters()[message.roomId] === message.chatter.id;
 
   return message.type === MessageType.MESSAGE ? (
     // 메세지일 경우

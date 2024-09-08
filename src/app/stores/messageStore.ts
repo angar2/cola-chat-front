@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { getMessagesFromRoom } from '@/shared/apis/chatApi';
 import { Message } from '@/shared/types/type';
-import { getLocalRoomChatters } from '@/shared/utils/storage';
+import { getSessionRoomChatters } from '@/shared/utils/storage';
 
 interface MessageStoreState {
   messages: {
@@ -31,7 +31,7 @@ const useMessageStore = create<MessageStoreState>((set, get) => ({
     const initialMessages = await getMessagesFromRoom({
       roomId,
       page,
-      chatterId: getLocalRoomChatters()[roomId],
+      chatterId: getSessionRoomChatters()[roomId],
     });
 
     if (initialMessages) {

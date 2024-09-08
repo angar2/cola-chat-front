@@ -5,7 +5,7 @@ import MessageFeed from './messageFeed';
 import MessageSender from './messageSender';
 import { Message } from '@/shared/types/type';
 import MessageHeader from './messageHeader';
-import { getLocalRoomChatters } from '@/shared/utils/storage';
+import { getSessionRoomChatters } from '@/shared/utils/storage';
 import MessagePreview from './messagePreview';
 import { scrollToBottom } from '@/shared/utils/scroll';
 
@@ -29,7 +29,7 @@ export default function MessageContainer() {
       {showMessagePreview &&
         lastMessage &&
         lastMessage.chatterId !==
-          getLocalRoomChatters()[lastMessage.roomId] && (
+          getSessionRoomChatters()[lastMessage.roomId] && (
           <MessagePreview
             lastMessage={lastMessage}
             onClick={() => {
