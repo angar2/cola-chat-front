@@ -5,10 +5,10 @@ import { Tooltip } from 'react-tooltip';
 
 export default function MessageHeader() {
   const room = useRoomStore((state) => state.room);
-  if (!room) return;
-  const { title, isPassword, expiresAt } = room;
-
   const chatters = useRoomStore((state) => state.chatters);
+
+  if (!room) return null;
+  const { title, isPassword, expiresAt } = room;
 
   const originDate = new Date(expiresAt);
 

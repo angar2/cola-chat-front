@@ -19,9 +19,10 @@ export default function UpdateNicknameModal(props: Props) {
     setError,
     handleCallback,
   } = props;
-  if (!isOpen) return;
 
   const [value, setValue] = useState<string>('');
+
+  if (!isOpen) return null;
 
   // 입력 인풋
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {

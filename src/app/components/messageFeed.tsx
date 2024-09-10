@@ -19,17 +19,14 @@ type Props = {
 };
 
 export default function MessageFeed(props: Props) {
-  const { setShowMessagePreview, setLastMessage, endOfMessagesRef } =
-    props;
+  const { setShowMessagePreview, setLastMessage, endOfMessagesRef } = props;
 
   const room = useRoomStore((state) => state.room);
-  if (!room) return;
-
   const { messages, page, loadMessages } = useMessageStore();
   const nextPage = useMessageStore((state) => state.nextPage);
 
-  const scrollRef = useRef<HTMLDivElement | null>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
   // 스크롤 위치 감지
   const handleScroll = () => {
@@ -62,8 +59,8 @@ export default function MessageFeed(props: Props) {
 
   // 메세지 로드
   useEffect(() => {
-    loadMessages(room.id);
-  }, [page]);
+    if (room) loadMessages(room.id);
+  }, [room, page]);
 
   // 스크롤 위치 조정(저장된 메세지 로드)
   useEffect(() => {

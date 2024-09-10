@@ -21,6 +21,7 @@ type Props = {
 };
 export default function useSocket(props: Props) {
   const { id: roomId, namespace } = props.room;
+
   const router = useRouter();
 
   const { socket, setSocket } = useSocketStore();

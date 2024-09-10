@@ -20,12 +20,13 @@ export default function EnterConfirmModal(props: Props) {
     setIsErrorModalOpen,
     setEerrorMessage,
   } = props;
-  if (!isOpen) return null;
 
   const router = useRouter();
 
   const [password, setPassword] = useState<string>('');
   const [passwordError, setPasswordError] = useState<boolean>(false);
+
+  if (!isOpen) return null;
 
   // 비밀번호 입력 인풋
   const handleInputPassword = (event: React.ChangeEvent<HTMLInputElement>) => {

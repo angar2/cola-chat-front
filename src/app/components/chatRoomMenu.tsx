@@ -15,22 +15,23 @@ import useRoomChattersStore from '../stores/roomchatterStore';
 import { Tooltip } from 'react-tooltip';
 
 export default function ChatRoomMenu() {
+  const router = useRouter();
+
   const room = useRoomStore((state) => state.room);
-  if (!room) return;
-  const { id: roomId } = room;
   const roomChatters = useRoomChattersStore((state) => state.roomChatters);
-  const chatter = roomChatters[roomId];
   const addRoomChatters = useRoomChattersStore(
     (state) => state.addRoomChatters
   );
   const { socket } = useSocketStore();
 
-  const router = useRouter();
-
   const [isOpenUpdateModal, setIsOpenUpdateModal] = useState<boolean>(false);
   const [isOpenLeaveModal, setIsOpenLeaveModal] = useState<boolean>(false);
   const [isCompleteModal, setIsCompleteModal] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+
+  if (!room) return null;
+  const { id: roomId } = room;
+  const chatter = roomChatters[roomId];
 
   // 채팅방 URL 복사
   const handleCopyUrl = () => {

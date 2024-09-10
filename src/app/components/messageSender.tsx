@@ -14,11 +14,11 @@ export default function MessageSender(props: Props) {
   const { endOfMessagesRef } = props;
 
   const room = useRoomStore((state) => state.room);
-  if (!room) return;
-
   const { socket } = useSocketStore();
 
   const [content, setContent] = useState('');
+
+  if (!room) return null;
 
   // 메세지 전송
   const handleSend = () => {

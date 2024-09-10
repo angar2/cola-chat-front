@@ -6,6 +6,7 @@ type Props = {
 
 export default function ErrorModal(props: Props) {
   const { errorMessage } = props;
+
   const router = useRouter();
 
   // 모달 닫기

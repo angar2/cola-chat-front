@@ -12,7 +12,7 @@ type Props = {
   room: Room;
 };
 
-export default function preChatRoom(props: Props) {
+export default function PreChatRoom(props: Props) {
   const { room } = props;
 
   const [isEntryConfirmed, setIsEntryConfirmed] = useState(false);
