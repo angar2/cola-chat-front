@@ -12,7 +12,7 @@ export default function Header() {
             alt="Cola Chat"
             width={160}
             height={50}
-            className="w-24 sm:w-40"
+            className="w-28 sm:w-40"
           />
         </Link>
       </div>
