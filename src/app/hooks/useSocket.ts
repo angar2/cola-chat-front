@@ -5,7 +5,7 @@ import {
   removeSessionRoomChatters,
   saveSessionRoomChatters,
 } from '@/shared/utils/storage';
-import { emitJoin, emitLeave } from '@/shared/webSockets/emit';
+import { emitJoin } from '@/shared/webSockets/emit';
 import useSocketStore from '../stores/socketStore';
 import useMessageStore from '../stores/messageStore';
 import { Room } from '@/shared/types/type';
@@ -77,36 +77,20 @@ export default function useSocket(props: Props) {
       console.log('Websocket Error', JSON.parse(data));
     });
 
-    // 페이지 이탈 이벤트 설정(방 퇴장)
-    const handleBeforeUnload = () => {
-      // 채팅방 퇴장
-      emitLeave(socketInstance, { roomId }, () => {
-        // 소켓 연결 해제
-        socketInstance.disconnect();
-        // 소켓 초기화
-        setSocket(null);
-      });
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
     // 페이지 이동 라우터 변경
     const originalPush = router.push;
     const newPush = (href: string, options?: any) => {
-      emitLeave(socketInstance, { roomId }, () => {
-        removeSessionRoomChatters(roomId);
-        delete roomChatters[roomId];
-        // 소켓 연결 해제
-        socketInstance.disconnect();
-        setSocket(null);
-      });
+      // 소켓 세션 데이터 제거
+      removeSessionRoomChatters(roomId);
+      delete roomChatters[roomId];
+
+      // 소켓 연결 해제
+      socketInstance.disconnect();
       originalPush(href, options);
     };
     router.push = newPush;
 
     return () => {
-      // 페이지 이탈 이벤트 제거
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-
       // 페이지 이동 라우터 복구
       router.push = originalPush;
 

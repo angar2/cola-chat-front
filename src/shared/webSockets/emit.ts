@@ -27,10 +27,9 @@ export function emitJoin(
 // 채팅방 퇴장
 export function emitLeave(
   socket: Socket,
-  data: { roomId: string },
   callback?: () => void
 ) {
-  socket.emit(SocketEvent.LEAVE, data, (response: WSResponse<null>) => {
+  socket.emit(SocketEvent.LEAVE, (response: WSResponse<null>) => {
     if (response.success) callback && callback();
   });
 }
