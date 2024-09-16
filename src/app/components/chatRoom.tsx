@@ -22,7 +22,9 @@ export default function ChatRoom(props: Props) {
     room && (
       <div className="flex w-full h-full">
         <MessageContainer />
-        <ChatRoomMenu />
+        <div className="hidden sm:block h-fit">
+          <ChatRoomMenu />
+        </div>
       </div>
     )
   );

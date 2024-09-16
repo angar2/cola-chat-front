@@ -95,11 +95,12 @@ export default function ChatRoomMenu() {
   };
 
   return (
-    <div className="h-full pt-2">
-      <div className="flex flex-col gap-3 w-full h-full px-2 py-3 bg-d bg-opacity-40 text-g rounded-r">
+    <div className="h-full sm:pt-2">
+      <div className="sm:hidden absolute top-0 left-1/2 transform translate-x-7 -translate-y-full w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-4 border-b-a"></div>
+      <div className="flex flex-col gap-3 w-full h-full px-2 py-3 bg-a sm:bg-d bg-opacity-80 sm:bg-opacity-40 text-g rounded sm:rounded-r">
         {/* URL 복사 */}
         <button
-          className="p-1 active:scale-90"
+          className="flex items-center gap-1 p-1 active:scale-90"
           onClick={handleCopyUrl}
           id="copy"
         >
@@ -116,16 +117,18 @@ export default function ChatRoomMenu() {
               fill="currentColor"
             />
           </svg>
+          <p className="sm:hidden text-xs text-c">URL 복사</p>
           <Tooltip
             anchorSelect="#copy"
             delayShow={500}
             content="채팅방 URL 복사"
+            className="hidden sm:block"
           />
         </button>
 
         {/* 닉네임 변경 */}
         <button
-          className="p-1 active:scale-90"
+          className="flex items-center gap-1 p-1 active:scale-90"
           onClick={handleUpdateModal}
           id="nickname"
         >
@@ -142,17 +145,19 @@ export default function ChatRoomMenu() {
               fill="currentColor"
             />
           </svg>
+          <p className="sm:hidden text-xs text-c">닉네임 변경</p>
           <Tooltip
             anchorSelect="#nickname"
             delayShow={500}
             content="닉네임 변경"
+            className="hidden sm:block"
           />
         </button>
         <hr className="border-d" />
 
         {/* 채팅방 나가기 */}
         <button
-          className="p-1 active:scale-90"
+          className="flex items-center gap-1 p-1 active:scale-90"
           onClick={handleLeaveModal}
           id="leave"
         >
@@ -169,10 +174,12 @@ export default function ChatRoomMenu() {
               fill="currentColor"
             />
           </svg>
+          <p className="sm:hidden text-xs text-c">채팅방 나가기</p>
           <Tooltip
             anchorSelect="#leave"
             delayShow={500}
             content="채팅방 나가기"
+            className="hidden sm:block"
           />
         </button>
       </div>
