@@ -14,7 +14,7 @@ export default async function ChatPage({ params }: Params) {
 
   return (
     room && (
-      <main className="flex justify-center w-full h-full sm:max-w-2xl 2xl:max-w-3xl items-center mx-auto py-2">
+      <main className="flex-grow flex justify-center w-full h-full sm:max-w-2xl 2xl:max-w-3xl mx-auto pt-0 sm:pt-4 pb-0 sm:pb-4 overflow-hidden">
         {<PreChatRoom room={room} />}
       </main>
     )

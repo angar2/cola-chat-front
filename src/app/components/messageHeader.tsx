@@ -45,13 +45,13 @@ export default function MessageHeader() {
   const onlineBycapacity = `${chatters?.length || 0}/${room.capacity}`;
 
   return (
-    <div className="relative">
+    <div className="sticky top-0 w-full">
       {isOpenMenuModal && (
         <div className="sm:hidden absolute top-10 right-0">
           <ChatRoomMenu />
         </div>
       )}
-      <div className="flex-none flex flex-col w-full h-fit px-3 sm:px-5 2xl:px-6 py-2 2xl:py-4 gap-2 border-b-[0.4px] border-c border-opacity-50">
+      <div className="flex-none flex flex-col w-full h-fit px-3 sm:px-5 2xl:px-6 py-2 2xl:py-4 gap-2 bg-d border-b-[0.4px] border-c border-opacity-50">
         <div className="flex items-center justify-between">
           <div className="flex gap-1">
             {/* 채팅방 잠금 */}

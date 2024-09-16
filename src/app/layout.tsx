@@ -53,13 +53,15 @@ export default function RootLayout({
           name="msapplication-TileImage"
           content="/assets/images/favicon/ms-icon-144x144.png"
         />
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#F0EFDB" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+        />
       </head>
-      <body className={inter.className}>
-        <div className="min-h-screen bg-b">
-          <Header />
-          {children}
-        </div>
+      <body className={`${inter.className}, bg-b flex flex-col`}>
+        <Header />
+        {children}
       </body>
     </html>
   );

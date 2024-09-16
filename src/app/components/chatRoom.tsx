@@ -20,7 +20,7 @@ export default function ChatRoom(props: Props) {
 
   return (
     room && (
-      <div className="flex w-full h-full">
+      <div className="flex-grow flex w-full h-full">
         <MessageContainer />
         <div className="hidden sm:block h-fit">
           <ChatRoomMenu />

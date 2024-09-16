@@ -31,3 +31,21 @@ body {
     text-wrap: balance;
   }
 }
+
+@layer base {
+  html,
+  body {
+    @apply h-full w-full;
+  }
+
+  .full-height {
+    height: 100vh;
+    @supports (-webkit-touch-callout: none) {
+      height: -webkit-fill-available;
+    }
+  }
+}
+
+/* #__next {
+  height: calc(var(--vh, 1vh) * 100);
+} */

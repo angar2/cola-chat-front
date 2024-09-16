@@ -75,7 +75,10 @@ export default function MessageFeed(props: Props) {
   }, [messages.newMessages]);
 
   return (
-    <div ref={scrollRef} className="flex-grow p-4 overflow-y-auto">
+    <div
+      ref={scrollRef}
+      className="flex-grow p-4 pb-16 sm:pb-32 overflow-y-auto"
+    >
       <div className="flex flex-col">
         {/* 저장된 메세지 */}
         {messages.storageMessages.length > 0 &&

@@ -1,7 +1,7 @@
 'use client';
 
 import { emitMessage } from '@/shared/webSockets/emit';
-import { KeyboardEvent, RefObject, useState } from 'react';
+import { KeyboardEvent, RefObject, useEffect, useRef, useState } from 'react';
 import useSocketStore from '../stores/socketStore';
 import useRoomStore from '../stores/roomStore';
 import { LIMIT } from '@/shared/constants/limit';
@@ -17,6 +17,20 @@ export default function MessageSender(props: Props) {
   const { socket } = useSocketStore();
 
   const [content, setContent] = useState('');
+  const [rows, setRows] = useState(1);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 640) setRows(3);
+      else setRows(1);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   if (!room) return null;
 
@@ -28,6 +42,11 @@ export default function MessageSender(props: Props) {
         endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
       });
     }
+  };
+
+  const handleClick = () => {
+    textareaRef.current?.focus();
+    handleSend();
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -44,18 +63,20 @@ export default function MessageSender(props: Props) {
   };
 
   return (
-    <div className="flex-none flex w-full px-4 py-4 bg-a">
-      <textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        onKeyPress={handleKeyDown}
-        maxLength={LIMIT.MESSAGE}
-        className="w-full h-full outline-none resize-none"
-      />
-      <div className="flex items-end">
+    <div className="absolute bottom-0 flex-none w-full px-3 py-2">
+      <div className="flex items-center sm:items-end w-full px-2 py-2 sm:px-4 sm:py-4 bg-a rounded-lg sm:rounded-xl">
+        <textarea
+          ref={textareaRef}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          onKeyPress={handleKeyDown}
+          maxLength={LIMIT.MESSAGE}
+          className="w-full h-full outline-none resize-none"
+          rows={rows}
+        />
         <button
           type="button"
-          onClick={handleSend}
+          onClick={handleClick}
           disabled={!socket}
           className="active:scale-90"
         >
@@ -65,7 +86,7 @@ export default function MessageSender(props: Props) {
             viewBox="0 0 36 36"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="text-c"
+            className="w-8 h-8 sm:w-9 sm:h-9 text-c"
           >
             <g clipPath="url(#clip0_41_20)">
               <path
