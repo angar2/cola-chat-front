@@ -7,19 +7,20 @@ import useRoomStore from '../stores/roomStore';
 import { LIMIT } from '@/shared/constants/limit';
 
 type Props = {
-  endOfMessagesRef: RefObject<HTMLDivElement>;
+  feedRef: RefObject<HTMLDivElement>;
+  textareaRef: RefObject<HTMLTextAreaElement>;
 };
 
 export default function MessageSender(props: Props) {
-  const { endOfMessagesRef } = props;
+  const { feedRef, textareaRef } = props;
 
   const room = useRoomStore((state) => state.room);
   const { socket } = useSocketStore();
 
   const [content, setContent] = useState('');
   const [rows, setRows] = useState(1);
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
+  // 사이즈(너비) 감지 이벤트 등록
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 640) setRows(3);
@@ -39,16 +40,19 @@ export default function MessageSender(props: Props) {
     if (socket && content.trim() !== '') {
       emitMessage(socket, { roomId: room.id, content }, () => {
         setContent('');
-        endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+        const chatFeed = feedRef.current;
+        if (chatFeed) chatFeed.scrollTop = chatFeed.scrollHeight;
       });
     }
   };
 
+  // 전송 버튼 클릭
   const handleClick = () => {
-    textareaRef.current?.focus();
     handleSend();
+    textareaRef.current?.focus();
   };
 
+  // 전송 키 클릭
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();

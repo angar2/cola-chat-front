@@ -45,7 +45,7 @@ export default function MessageHeader() {
   const onlineBycapacity = `${chatters?.length || 0}/${room.capacity}`;
 
   return (
-    <div className="sticky top-0 w-full">
+    <div className="relative w-full">
       {isOpenMenuModal && (
         <div className="sm:hidden absolute top-10 right-0">
           <ChatRoomMenu />

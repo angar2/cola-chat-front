@@ -7,50 +7,28 @@ import { Message } from '@/shared/types/type';
 import MessageHeader from './messageHeader';
 import { getSessionRoomChatters } from '@/shared/utils/storage';
 import MessagePreview from './messagePreview';
-import { scrollToBottom } from '@/shared/utils/scroll';
-import throttle from 'lodash/throttle';
+import { getViewportHeightGap, scrollToBottom } from '@/shared/utils/scroll';
+import useResize from '../hooks/useResize';
 
 export default function MessageContainer() {
   const [showMessagePreview, setShowMessagePreview] = useState(false);
   const [lastMessage, setLastMessage] = useState<Message>();
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
+  const feedRef = useRef<HTMLDivElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  useEffect(() => {
-    const handleResize = throttle(() => {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      });
-      setTimeout(() => {
-        const windowHeight = Number(window.innerHeight);
-        const visualHeight = Number(window.visualViewport?.height);
-        const difference = windowHeight - visualHeight;
-        if (containerRef.current)
-          document.documentElement.style.height = `calc(100% - ${difference}px)`;
-      }, 0);
-    }, 400);
-
-    handleResize();
-    visualViewport?.addEventListener('resize', handleResize);
-
-    return () => visualViewport?.removeEventListener('resize', handleResize);
-  }, []);
+  // 사이즈(높이) 감지 이벤트 등록
+  useResize({ feedRef });
 
   return (
-    <div
-      ref={containerRef}
-      className="relative flex flex-col w-full h-full bg-d border-[0.6px] border-c border-opacity-50 sm:rounded-md overflow-hidden"
-    >
+    <div className="relative flex flex-col w-full h-full bg-d border-[0.6px] border-c border-opacity-50 sm:rounded-md overflow-hidden">
       <MessageHeader />
       <MessageFeed
         setShowMessagePreview={setShowMessagePreview}
         setLastMessage={setLastMessage}
-        endOfMessagesRef={endOfMessagesRef}
+        feedRef={feedRef}
       />
-      <MessageSender endOfMessagesRef={endOfMessagesRef} />
+      <MessageSender feedRef={feedRef} textareaRef={textareaRef} />
 
       {/* 메세지 미리보기 */}
       {showMessagePreview &&
@@ -60,8 +38,9 @@ export default function MessageContainer() {
           <MessagePreview
             lastMessage={lastMessage}
             onClick={() => {
-              scrollToBottom(endOfMessagesRef);
+              scrollToBottom(feedRef);
               setShowMessagePreview(false);
+              if (getViewportHeightGap() !== 0) textareaRef.current?.focus();
             }}
           />
         )}

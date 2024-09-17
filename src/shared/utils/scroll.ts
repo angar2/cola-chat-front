@@ -11,19 +11,6 @@ export function adjustScrollPositionByView(
     ref.scrollTop = ref.scrollHeight - scrollPosition;
 }
 
-// 뷰 포지션 기준 최하단으로 스크롤 조정
-export function scrollToBottomByView(
-  scrollRef: React.RefObject<HTMLDivElement> | null,
-  endOfMessagesRef: React.RefObject<HTMLDivElement> | null
-) {
-  if (!scrollRef || !endOfMessagesRef) return;
-  if (
-    scrollRef.current &&
-    getVisiblePosition(scrollRef.current) < SCROLL_BOTTOM_LIMIT
-  )
-    scrollToBottom(endOfMessagesRef);
-}
-
 // 현재 뷰 포지션 가져오기
 export function getVisiblePosition(ref: HTMLElement | null): number {
   if (!ref) return 0;
@@ -31,9 +18,14 @@ export function getVisiblePosition(ref: HTMLElement | null): number {
 }
 
 // 최하단으로 스크롤 조정
-export function scrollToBottom(
-  endOfMessagesRef: React.RefObject<HTMLDivElement> | null
-) {
-  if (!endOfMessagesRef) return;
-  endOfMessagesRef!.current?.scrollIntoView({ behavior: 'smooth' });
+export function scrollToBottom(ref: React.RefObject<HTMLDivElement> | null) {
+  const element = ref?.current;
+  if (element) element.scrollTop = element.scrollHeight;
+}
+
+// 이너-뷰포트 높이 차이 가져오기
+export function getViewportHeightGap(): number {
+  const windowHeight = Number(window.innerHeight) || 0;
+  const visualHeight = Number(window.visualViewport?.height) || 0;
+  return windowHeight - visualHeight;
 }
