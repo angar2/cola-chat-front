@@ -51,7 +51,7 @@ export default function MessageHeader() {
           <ChatRoomMenu />
         </div>
       )}
-      <div className="flex-none flex flex-col w-full h-fit px-3 sm:px-5 2xl:px-6 py-2 2xl:py-4 gap-2 bg-d border-b-[0.4px] border-c border-opacity-50">
+      <div className="flex-none flex flex-col w-full h-fit px-4 sm:px-5 2xl:px-6 py-2 2xl:py-4 gap-2 bg-d border-b-[0.4px] border-c border-opacity-50">
         <div className="flex items-center justify-between">
           <div className="flex gap-1">
             {/* 채팅방 잠금 */}
@@ -80,7 +80,7 @@ export default function MessageHeader() {
 
             {/* 채팅방 제목 */}
             <div className="w-full overflow-hidden">
-              <p className="text-lg 2xl:text-xl font-semibold truncate">
+              <p className="text-lg 2xl:text-xl font-semibold text-g truncate">
                 {title}
               </p>
             </div>
@@ -95,7 +95,7 @@ export default function MessageHeader() {
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6 text-c"
+                className="w-7 h-7 text-c"
               >
                 <path
                   d={

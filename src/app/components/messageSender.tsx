@@ -90,7 +90,7 @@ export default function MessageSender(props: Props) {
             viewBox="0 0 36 36"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="w-8 h-8 sm:w-9 sm:h-9 text-c"
+            className="w-8 h-8 sm:w-9 sm:h-9 text-f"
           >
             <g clipPath="url(#clip0_41_20)">
               <path
