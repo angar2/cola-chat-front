@@ -63,7 +63,7 @@ export default function MessageSender(props: Props) {
   };
 
   return (
-    <div className="absolute bottom-0 flex-none w-full px-3 py-2">
+    <div className="flex-none w-full px-3 py-2">
       <div className="flex items-center sm:items-end w-full px-2 py-2 sm:px-4 sm:py-4 bg-a rounded-lg sm:rounded-xl">
         <textarea
           ref={textareaRef}
