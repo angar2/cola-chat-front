@@ -25,10 +25,7 @@ export function emitJoin(
 }
 
 // 채팅방 퇴장
-export function emitLeave(
-  socket: Socket,
-  callback?: () => void
-) {
+export function emitLeave(socket: Socket, callback?: () => void) {
   socket.emit(SocketEvent.LEAVE, (response: WSResponse<null>) => {
     if (response.success) callback && callback();
   });
@@ -53,6 +50,17 @@ export function emitAlert(
   callback?: () => void
 ) {
   socket.emit(SocketEvent.ALERT, data, (response: WSResponse<null>) => {
+    if (response.success) callback && callback();
+  });
+}
+
+// 온라인 채터 상태 요청
+export function emitChatters(
+  socket: Socket,
+  data: { roomId: string },
+  callback?: () => void
+) {
+  socket.emit(SocketEvent.CHATTERS, data, (response: WSResponse<null>) => {
     if (response.success) callback && callback();
   });
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { removeSessionRoomChatters } from '@/shared/utils/storage';
-import { emitAlert } from '@/shared/webSockets/emit';
+import { emitAlert, emitChatters } from '@/shared/webSockets/emit';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import LeaveRoomModal from './leaveRoomModal';
@@ -72,7 +72,7 @@ export default function ChatRoomMenu() {
       setIsCompleteModal(true);
 
       // 공지 전송
-      if (socket)
+      if (socket) {
         emitAlert(
           socket,
           {
@@ -84,6 +84,9 @@ export default function ChatRoomMenu() {
           },
           () => addRoomChatters(roomId, result.data!)
         );
+
+        emitChatters(socket, { roomId });
+      }
     }
   };
 
