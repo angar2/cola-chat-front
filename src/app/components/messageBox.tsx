@@ -38,13 +38,10 @@ export default function MessageBox(props: Props) {
       </div>
     </div>
   ) : (
-    // 핑일 경우
+    // 공지일 경우
     <div className="flex justify-center gap-2 p-3 rounded">
       <div className="">
         <p className="text-sm text-c whitespace-pre-wrap">{message.content}</p>
-      </div>
-      <div className="flex w-fit items-center">
-        <p className="text-xs text-c whitespace-nowrap">({date})</p>
       </div>
     </div>
   );
