@@ -2,10 +2,10 @@
 
 import useRoomStore from '../stores/roomStore';
 import { Tooltip } from 'react-tooltip';
-import ChatRoomMenu from './chatRoomMenu';
 import { useState } from 'react';
 import useRoomChattersStore from '../stores/roomchatterStore';
 import ChatterListModal from './chatterListModal';
+import ChatRoomMenuModal from './chatRoomMenuModal';
 
 export default function MessageHeader() {
   const room = useRoomStore((state) => state.room);
@@ -13,7 +13,7 @@ export default function MessageHeader() {
   const roomChatters = useRoomChattersStore((state) => state.roomChatters);
 
   const [isOpenMenuModal, setIsOpenMenuModal] = useState<boolean>(false);
-  const [isOpenChatterListModal, setIsOpenhatterListModal] =
+  const [isOpenChatterListModal, setIsOpenChatterListModal] =
     useState<boolean>(false);
 
   if (!room) return null;
@@ -29,7 +29,7 @@ export default function MessageHeader() {
 
   // 채터 리스트 모달 열기
   const handlehatterListModal = () => {
-    setIsOpenhatterListModal(!isOpenChatterListModal);
+    setIsOpenChatterListModal(!isOpenChatterListModal);
   };
 
   const onlineBycapacity = `${chatters?.length || 0}/${room.capacity}`;
@@ -37,11 +37,14 @@ export default function MessageHeader() {
   return (
     <div className="relative w-full">
       {isOpenMenuModal && (
-        <div className="sm:hidden absolute top-10 right-0">
-          <ChatRoomMenu />
-        </div>
+        <ChatRoomMenuModal onClose={() => setIsOpenMenuModal(false)} />
       )}
-      {isOpenChatterListModal && <ChatterListModal chatters={chatters} />}
+      {isOpenChatterListModal && (
+        <ChatterListModal
+          chatters={chatters}
+          onClose={() => setIsOpenChatterListModal(false)}
+        />
+      )}
       <div className="flex-none flex flex-col w-full h-fit px-4 sm:px-5 2xl:px-6 py-2 2xl:py-4 gap-2 bg-d border-b-[0.4px] border-c border-opacity-50">
         <div className="flex items-center justify-between">
           <div className="flex gap-1">

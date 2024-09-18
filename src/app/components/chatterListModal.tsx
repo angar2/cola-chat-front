@@ -1,23 +1,33 @@
 'use client';
 
+import { useRef } from 'react';
+import useCloseModal from '../hooks/useCloseModal';
 import useRoomStore from '../stores/roomStore';
 import useRoomChattersStore from '../stores/roomchatterStore';
 import { Chatter } from '@/shared/types/type';
 
 type Props = {
   chatters: Chatter[];
+  onClose: () => void;
 };
 export default function ChatterListModal(props: Props) {
-  const { chatters: onlineChatters } = props;
+  const { chatters: onlineChatters, onClose } = props;
 
   const room = useRoomStore((state) => state.room);
   const roomChatters = useRoomChattersStore((state) => state.roomChatters);
+
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  useCloseModal({ elementRef, onClose });
 
   const chatter = room?.id ? roomChatters[room.id] : null;
   if (!chatter) return null;
 
   return (
-    <div className="absolute bottom-0 left-4 transform translate-y-full">
+    <div
+      ref={elementRef}
+      className="absolute bottom-0 left-4 transform translate-y-full"
+    >
       <div className="absolute top-0 left-7 sm:left-8 -translate-y-full w-0 h-0 border-x-4 border-x-transparent border-b-4 border-b-a border-opacity-80"></div>
       <div className="flex flex-col w-full h-full px-2 py-3 bg-a bg-opacity-80 rounded sm:rounded-r text-sm font-semibold text-c">
         {onlineChatters.map((onlineChatter, index) => (
