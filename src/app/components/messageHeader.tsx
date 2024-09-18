@@ -5,6 +5,7 @@ import { Tooltip } from 'react-tooltip';
 import ChatRoomMenu from './chatRoomMenu';
 import { useState } from 'react';
 import useRoomChattersStore from '../stores/roomchatterStore';
+import ChatterListModal from './chatterListModal';
 
 export default function MessageHeader() {
   const room = useRoomStore((state) => state.room);
@@ -12,6 +13,8 @@ export default function MessageHeader() {
   const roomChatters = useRoomChattersStore((state) => state.roomChatters);
 
   const [isOpenMenuModal, setIsOpenMenuModal] = useState<boolean>(false);
+  const [isOpenChatterListModal, setIsOpenhatterListModal] =
+    useState<boolean>(false);
 
   if (!room) return null;
   const { id: roomId, title, isPassword } = room;
@@ -24,15 +27,21 @@ export default function MessageHeader() {
     setIsOpenMenuModal(!isOpenMenuModal);
   };
 
+  // 채터 리스트 모달 열기
+  const handlehatterListModal = () => {
+    setIsOpenhatterListModal(!isOpenChatterListModal);
+  };
+
   const onlineBycapacity = `${chatters?.length || 0}/${room.capacity}`;
 
   return (
-    <div className="relative w-full overflow-visible">
+    <div className="relative w-full">
       {isOpenMenuModal && (
         <div className="sm:hidden absolute top-10 right-0">
           <ChatRoomMenu />
         </div>
       )}
+      {isOpenChatterListModal && <ChatterListModal chatters={chatters} />}
       <div className="flex-none flex flex-col w-full h-fit px-4 sm:px-5 2xl:px-6 py-2 2xl:py-4 gap-2 bg-d border-b-[0.4px] border-c border-opacity-50">
         <div className="flex items-center justify-between">
           <div className="flex gap-1">
@@ -94,7 +103,11 @@ export default function MessageHeader() {
 
         <div className="flex justify-between">
           {/* 채팅방 인원수 */}
-          <div className="flex gap-1" id="headcount">
+          <button
+            className="relative flex gap-1"
+            onClick={handlehatterListModal}
+            id="headcount"
+          >
             <svg
               width="24"
               height="24"
@@ -116,7 +129,8 @@ export default function MessageHeader() {
               delayShow={500}
               content="현재 인원수"
             />
-          </div>
+          </button>
+
           {/* 닉네임 */}
           <div className="flex justify-start items-center gap-1" id="nickname">
             <svg
