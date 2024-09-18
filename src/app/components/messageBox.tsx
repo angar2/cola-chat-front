@@ -25,9 +25,11 @@ export default function MessageBox(props: Props) {
   return message.type === MessageType.MESSAGE ? (
     // 메세지일 경우
     <div className="flex flex-col gap-1 p-2 rounded">
-      <div className={`flex ${isMine && 'flex-row-reverse'}`}>
-        <p className="text-c font-semibold">{message.chatter.nickname}</p>
-      </div>
+      {!isMine && (
+        <div className={`flex ${isMine && 'flex-row-reverse'}`}>
+          <p className="text-c font-semibold">{message.chatter.nickname}</p>
+        </div>
+      )}
       <div className={`flex ${isMine && 'flex-row-reverse'} gap-2`}>
         <div className={`px-3 py-2 ${isMine ? 'bg-b' : 'bg-a'} rounded-md`}>
           <p className="text-g whitespace-pre-wrap">{message.content}</p>

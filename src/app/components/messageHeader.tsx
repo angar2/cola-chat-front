@@ -4,48 +4,30 @@ import useRoomStore from '../stores/roomStore';
 import { Tooltip } from 'react-tooltip';
 import ChatRoomMenu from './chatRoomMenu';
 import { useState } from 'react';
+import useRoomChattersStore from '../stores/roomchatterStore';
 
 export default function MessageHeader() {
   const room = useRoomStore((state) => state.room);
   const chatters = useRoomStore((state) => state.chatters);
+  const roomChatters = useRoomChattersStore((state) => state.roomChatters);
 
   const [isOpenMenuModal, setIsOpenMenuModal] = useState<boolean>(false);
 
   if (!room) return null;
-  const { title, isPassword, expiresAt } = room;
+  const { id: roomId, title, isPassword } = room;
+
+  const chatter = roomChatters[roomId];
+  if (!chatter) return null;
 
   // 채팅방 메뉴 모달 열기
   const handleMenuModal = () => {
     setIsOpenMenuModal(!isOpenMenuModal);
   };
 
-  const originDate = new Date(expiresAt);
-
-  const formatter = new Intl.DateTimeFormat('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    timeZone: 'Asia/Seoul',
-  });
-  const formattedDateParts = formatter.formatToParts(originDate);
-
-  const year = formattedDateParts.find((part) => part.type === 'year')?.value;
-  const month = formattedDateParts.find((part) => part.type === 'month')?.value;
-  const day = formattedDateParts.find((part) => part.type === 'day')?.value;
-  const hour = formattedDateParts.find((part) => part.type === 'hour')?.value;
-  const minute = formattedDateParts.find(
-    (part) => part.type === 'minute'
-  )?.value;
-
-  const date = `${year}-${month}-${day} ${hour}:${minute}`;
-
   const onlineBycapacity = `${chatters?.length || 0}/${room.capacity}`;
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full overflow-visible">
       {isOpenMenuModal && (
         <div className="sm:hidden absolute top-10 right-0">
           <ChatRoomMenu />
@@ -75,7 +57,7 @@ export default function MessageHeader() {
             <Tooltip
               anchorSelect="#lock"
               delayShow={500}
-              content="암호가 설정된 채팅방"
+              content="프라이빗 채팅방"
             />
 
             {/* 채팅방 제목 */}
@@ -135,11 +117,8 @@ export default function MessageHeader() {
               content="현재 인원수"
             />
           </div>
-          {/* 채팅방 만료기한 */}
-          <div
-            className="flex justify-start items-center gap-1"
-            id="expiration"
-          >
+          {/* 닉네임 */}
+          <div className="flex justify-start items-center gap-1" id="nickname">
             <svg
               width="24"
               height="24"
@@ -149,15 +128,18 @@ export default function MessageHeader() {
               className="w-4 h-4 2xl:w-5 2xl:h-5 text-c"
             >
               <path
-                d="M12 20C10.1435 20 8.36301 19.2625 7.05025 17.9497C5.7375 16.637 5 14.8565 5 13C5 11.1435 5.7375 9.36301 7.05025 8.05025C8.36301 6.7375 10.1435 6 12 6C13.8565 6 15.637 6.7375 16.9497 8.05025C18.2625 9.36301 19 11.1435 19 13C19 14.8565 18.2625 16.637 16.9497 17.9497C15.637 19.2625 13.8565 20 12 20ZM19.03 7.39L20.45 5.97C20 5.46 19.55 5 19.04 4.56L17.62 6C16.07 4.74 14.12 4 12 4C9.61305 4 7.32387 4.94821 5.63604 6.63604C3.94821 8.32387 3 10.6131 3 13C3 15.3869 3.94821 17.6761 5.63604 19.364C7.32387 21.0518 9.61305 22 12 22C17 22 21 17.97 21 13C21 10.88 20.26 8.93 19.03 7.39ZM11 14H13V8H11M15 1H9V3H15V1Z"
+                d="M12 2C10.6868 2 9.38642 2.25866 8.17317 2.7612C6.95991 3.26375 5.85752 4.00035 4.92893 4.92893C3.05357 6.8043 2 9.34784 2 12C2 14.6522 3.05357 17.1957 4.92893 19.0711C5.85752 19.9997 6.95991 20.7362 8.17317 21.2388C9.38642 21.7413 10.6868 22 12 22C14.6522 22 17.1957 20.9464 19.0711 19.0711C20.9464 17.1957 22 14.6522 22 12C22 10.6868 21.7413 9.38642 21.2388 8.17317C20.7362 6.95991 19.9997 5.85752 19.0711 4.92893C18.1425 4.00035 17.0401 3.26375 15.8268 2.7612C14.6136 2.25866 13.3132 2 12 2ZM12 20C9.87827 20 7.84344 19.1571 6.34315 17.6569C4.84285 16.1566 4 14.1217 4 12C4 9.87827 4.84285 7.84344 6.34315 6.34315C7.84344 4.84285 9.87827 4 12 4C14.1217 4 16.1566 4.84285 17.6569 6.34315C19.1571 7.84344 20 9.87827 20 12C20 14.1217 19.1571 16.1566 17.6569 17.6569C16.1566 19.1571 14.1217 20 12 20ZM8.5 11C8.10218 11 7.72064 10.842 7.43934 10.5607C7.15804 10.2794 7 9.89782 7 9.5C7 9.10218 7.15804 8.72064 7.43934 8.43934C7.72064 8.15804 8.10218 8 8.5 8C8.89782 8 9.27936 8.15804 9.56066 8.43934C9.84196 8.72064 10 9.10218 10 9.5C10 9.89782 9.84196 10.2794 9.56066 10.5607C9.27936 10.842 8.89782 11 8.5 11ZM17 9.5C17 9.89782 16.842 10.2794 16.5607 10.5607C16.2794 10.842 15.8978 11 15.5 11C15.1022 11 14.7206 10.842 14.4393 10.5607C14.158 10.2794 14 9.89782 14 9.5C14 9.10218 14.158 8.72064 14.4393 8.43934C14.7206 8.15804 15.1022 8 15.5 8C15.8978 8 16.2794 8.15804 16.5607 8.43934C16.842 8.72064 17 9.10218 17 9.5ZM16 14V16H8V14H16Z"
                 fill="currentColor"
               />
             </svg>
-            <span className="text-xs 2xl:text-sm text-c">{date}</span>
+
+            <span className="text-sm 2xl:text-base font-semibold text-c">
+              {chatter.nickname}
+            </span>
             <Tooltip
-              anchorSelect="#expiration"
+              anchorSelect="#nickname"
               delayShow={500}
-              content="채팅방 만료기한"
+              content="닉네임"
             />
           </div>
         </div>
