@@ -15,7 +15,7 @@ export default function ChatRoomMenuModal(props: Props) {
   useCloseModal({ elementRef, onClose });
 
   return (
-    <div ref={elementRef} className="sm:hidden absolute top-10 right-0">
+    <div ref={elementRef} className="sm:hidden absolute top-11 right-1">
       <ChatRoomMenu />
     </div>
   );

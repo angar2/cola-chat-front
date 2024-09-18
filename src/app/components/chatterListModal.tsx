@@ -26,10 +26,10 @@ export default function ChatterListModal(props: Props) {
   return (
     <div
       ref={elementRef}
-      className="absolute bottom-0 left-4 transform translate-y-full"
+      className="absolute bottom-0 2xl:bottom-2 left-4 transform translate-y-full"
     >
       <div className="absolute top-0 left-7 sm:left-8 -translate-y-full w-0 h-0 border-x-4 border-x-transparent border-b-4 border-b-a border-opacity-80"></div>
-      <div className="flex flex-col w-full h-full px-2 py-3 bg-a bg-opacity-80 rounded sm:rounded-r text-sm font-semibold text-c">
+      <div className="flex flex-col w-full h-full px-2 py-3 bg-a bg-opacity-80 rounded sm:rounded-r text-sm sm:text-base font-semibold text-c">
         {onlineChatters.map((onlineChatter, index) => (
           <div key={index} className="flex items-center gap-1 p-1">
             <svg
